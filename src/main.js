@@ -47,6 +47,17 @@ const removePopup = () => {
   document.body.classList.remove('hide-overflow');
 };
 
+let filmDetailPopupCloseButton = null;
+
+const onCloseFilmDetailPopup = (evt) => {
+  evt.preventDefault();
+  if(filmDetailPopupCloseButton !== null) {
+    filmDetailPopupCloseButton.removeEventListener('click', onCloseFilmDetailPopup);
+    filmDetailPopupCloseButton = null;
+  }
+  removePopup();
+};
+
 const renderFilmCard = (container, film) => {
   renderTemplate(container, createFilmCardTemplate(film));
   //@todo: Ниже сделал немного по дурацкому, выбираю просто последний добавленный элемент, как сделать по нормальному разбирается в следующих уроках
@@ -54,10 +65,10 @@ const renderFilmCard = (container, film) => {
   cardElement.querySelector('.film-card__link').addEventListener('click', (clickEvent) => {
     clickEvent.preventDefault();
     addFilmDetailsPopup(film);
-    document.querySelector('.film-details__close-btn').addEventListener('click', (closeEvent) => {
-      closeEvent.preventDefault();
-      removePopup();
-    });
+    filmDetailPopupCloseButton = document.querySelector('.film-details__close-btn');
+    filmDetailPopupCloseButton.addEventListener('click',
+      (closeEvent) => onCloseFilmDetailPopup(closeEvent)
+    );
   });
 
 };

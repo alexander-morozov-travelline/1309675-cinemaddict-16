@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {MINUTES_IN_HOURS} from './const';
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -22,12 +23,12 @@ export const shuffleArray = (arr) => arr.sort(() => Math.random() - 0.5);
 export const getArrayRandLength = (arr) => shuffleArray(arr.slice(0, getRandomInteger(1, arr.length)));
 
 export const getTimeOutOfMinutes = (totalMinutes) => {
-  const hours = Math.trunc(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
+  const hours = Math.trunc(totalMinutes / MINUTES_IN_HOURS);
+  const minutes = totalMinutes % MINUTES_IN_HOURS;
 
   return hours ? `${hours}h ${minutes}m` : `${minutes}m`;
 };
 
-export const truncateText = (text, length) =>  text.length > length ? `${text.slice(0, 140)}...` : text;
+export const truncateText = (text, length) =>  text.length > length ? `${text.slice(0, length)}...` : text;
 
 export const getFormattedDate = (date, format) => dayjs(date).format(format);

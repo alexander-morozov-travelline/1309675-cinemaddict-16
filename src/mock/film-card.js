@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {MAX_DAYS_GAP, MIN_MONTH_IN_YEAR, MAX_MONTH_IN_YEAR, MIN_DAYS_IN_MONTH, MAX_DAYS_IN_MONTH} from '../const';
 import {
   getArrayRandLength,
   getRandomArrayElement,
@@ -9,18 +10,18 @@ import {
 } from '../util';
 
 const generateTitle = () => {
-  const titles = [
+  const TITLES = [
     'The Dance of Life',
     'Sagebrush Trail',
     'The Man with the Golden Arm',
     'Santa Claus Conquers the Martians',
     'Popeye the Sailor Meets Sindbad the Sailor',
   ];
-  return getRandomArrayElement(titles);
+  return getRandomArrayElement(TITLES);
 };
 
 const generateDirector = () => {
-  const directors = [
+  const DIRECTORS = [
     'David Lynch',
     'Martin Scorsese',
     'Joel and Ethan Coen',
@@ -29,11 +30,11 @@ const generateDirector = () => {
     'Abbas Kiarostami',
     'Errol Morris',
   ];
-  return getRandomArrayElement(directors);
+  return getRandomArrayElement(DIRECTORS);
 };
 
 const generateWriters = () => {
-  const writers = [
+  const WRITERS = [
     'William Goldman',
     'Anne Wigton',
     'Heinz Herald',
@@ -45,11 +46,11 @@ const generateWriters = () => {
     'Lars von Trier',
     'Quentin Tarantino'
   ];
-  return getArrayRandLength(writers);
+  return getArrayRandLength(WRITERS);
 };
 
 const generateActors = () => {
-  const actors = [
+  const ACTORS = [
     'William Goldman',
     'Anne Wigton',
     'Heinz Herald',
@@ -62,12 +63,12 @@ const generateActors = () => {
     'Humphrey Bogart',
     'Meryl Streep',
   ];
-  return getArrayRandLength(actors);
+  return getArrayRandLength(ACTORS);
 };
 
 const generateReleaseDate = (year) => {
-  const randMonth = getRandomInteger(0, 11);
-  const randDay = getRandomInteger(1, 31);
+  const randMonth = getRandomInteger(MIN_MONTH_IN_YEAR, MAX_MONTH_IN_YEAR);
+  const randDay = getRandomInteger(MIN_DAYS_IN_MONTH, MAX_DAYS_IN_MONTH);
 
   return dayjs().year(year).month(randMonth).date(randDay);
 };
@@ -80,7 +81,7 @@ const generateRuntime = () => {
 };
 
 const generateCountry = () => {
-  const countries = [
+  const COUNTRIES = [
     'Russia',
     'USA',
     'Germany',
@@ -90,11 +91,11 @@ const generateCountry = () => {
     'Finland',
     'India',
   ];
-  return getRandomArrayElement(countries);
+  return getRandomArrayElement(COUNTRIES);
 };
 
 const generateGenres = () => {
-  const genres = [
+  const GENRES = [
     'Musical',
     'Western',
     'Drama',
@@ -102,11 +103,11 @@ const generateGenres = () => {
     'Cartoon',
     'Mystery',
   ];
-  return getArrayRandLength(genres);
+  return getArrayRandLength(GENRES);
 };
 
 const generateDescription = () => {
-  const descriptions = [
+  const DESCRIPTIONS = [
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     'Cras aliquet varius magna, non porta ligula feugiat eget.',
     'Fusce tristique felis at fermentum pharetra.',
@@ -116,7 +117,7 @@ const generateDescription = () => {
     'Sed sed nisi sed augue convallis suscipit in sed felis.',
     'Nunc fermentum tortor. In rutrum ac purus sit amet tempus.',
   ];
-  return getRandomArrayElement(descriptions);
+  return getRandomArrayElement(DESCRIPTIONS);
 };
 
 const generateRating = () => {
@@ -132,7 +133,7 @@ const generateYear = () => {
 };
 
 const generatePoster = () => {
-  const posters = [
+  const POSTERS = [
     './images/posters/made-for-each-other.png',
     './images/posters/popeye-meets-sinbad.png',
     './images/posters/sagebrush-trail.jpg',
@@ -141,7 +142,7 @@ const generatePoster = () => {
     './images/posters/the-great-flamarion.jpg',
     './images/posters/the-man-with-the-golden-arm.jpg',
   ];
-  return getRandomArrayElement(posters);
+  return getRandomArrayElement(POSTERS);
 };
 
 const generateAgeRating = () => {
@@ -151,39 +152,38 @@ const generateAgeRating = () => {
 };
 
 const generateEmoji = () => {
-  const emojis = [
+  const EMOJIS = [
     './images/emoji/angry.png',
     './images/emoji/puke.png',
     './images/emoji/sleeping.png',
     './images/emoji/smile.png'
   ];
-  return getRandomArrayElement(emojis);
+  return getRandomArrayElement(EMOJIS);
 };
 
 const generateCommentText = () => {
-  const texts = [
+  const TEXTS = [
     'Interesting setting and a good cast',
     'Booooooooooring',
     'Very very old. Meh',
     'Almost two hours? Seriously?'
   ];
-  return getRandomArrayElement(texts);
+  return getRandomArrayElement(TEXTS);
 };
 
 const generateCommentAuthor = () => {
-  const authors = [
+  const AUTHORS = [
     'Tim Macoveev',
     'John Doe',
     'Ivan Petrov',
     'Den Ivanov',
     'Kirill Sidorov',
   ];
-  return getRandomArrayElement(authors);
+  return getRandomArrayElement(AUTHORS);
 };
 
 const generateCommentDay = () => {
-  const maxDaysGap = 90;
-  const daysGap = getRandomInteger(-maxDaysGap, 0);
+  const daysGap = getRandomInteger(-MAX_DAYS_GAP, 0);
 
   return dayjs().add(daysGap, 'day');
 };

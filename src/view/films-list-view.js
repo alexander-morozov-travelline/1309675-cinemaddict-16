@@ -1,16 +1,22 @@
+const filmList = {
+  ALL_FILMS: 'allFilms',
+  TOP_RATED: 'topRated',
+  MOST_COMMENTED: 'mostCommented',
+};
+
 const filmListParams = [
   {
-    id: 'allFilms',
+    id: filmList.ALL_FILMS,
     title: 'All movies. Upcoming',
     isExtra: false,
   },
   {
-    id: 'topRated',
+    id: filmList.TOP_RATED,
     title: 'Top rated',
     isExtra: true,
   },
   {
-    id: 'mostCommented',
+    id: filmList.MOST_COMMENTED,
     title: 'Most commented',
     isExtra: true,
   }
