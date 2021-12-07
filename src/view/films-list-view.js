@@ -1,3 +1,5 @@
+import {createElement} from '../render';
+
 const filmList = {
   ALL_FILMS: 'allFilms',
   TOP_RATED: 'topRated',
@@ -33,8 +35,27 @@ const itemFilmsListTemplate = (param) => {
 
 const generateFilmsList = (params) => params.map( (param) => itemFilmsListTemplate(param)).join('');
 
-export const createFilmsListTemplate = () => (
+const createFilmsListTemplate = () => (
   `<section class="films">
     ${generateFilmsList(filmListParams)}
   </section>`
 );
+
+export default class FilmsListView {
+  #element = null;
+
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmsListTemplate();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
