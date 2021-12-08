@@ -60,7 +60,7 @@ export default class FilmCardView {
 
   get cardLinkElement() {
     if(!this.#cardLinkElement) {
-      return this.element.querySelector('.film-card__link');
+      this.#cardLinkElement = this.element.querySelector('.film-card__link');
     }
     return this.#cardLinkElement;
   }

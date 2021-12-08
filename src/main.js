@@ -23,16 +23,13 @@ const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
 const siteStatisticsElement = siteFooterElement.querySelector('.footer__statistics');
 
+const filmListComponent = new FilmsListView();
+
 render(siteHeaderElement, new ProfileView().element);
 render(siteMainElement, new MainNavigationView(filters).element);
 render(siteMainElement, new SortView().element);
-render(siteMainElement, new FilmsListView().element);
+render(siteMainElement, filmListComponent.element);
 render(siteStatisticsElement, new StatisticView().element);
-
-const filmsElement = siteMainElement.querySelector('.films');
-const filmListContainer = filmsElement.querySelector('#allFilms .films-list__container');
-const filmListTopRatedContainer = filmsElement.querySelector('#topRated .films-list__container');
-const filmListMostCommentedContainer = filmsElement.querySelector('#mostCommented .films-list__container');
 
 const addFilmDetailsPopup = (film) => {
   const filmDetailPopupComponent = new FilmDetailsPopupView(film);
@@ -67,27 +64,28 @@ const renderFilmCard = (container, film) => {
 };
 
 for (let i = 0; i < FILM_COUNT_PER_STEP; i++) {
-  renderFilmCard(filmListContainer, filmList[i]);
-}
-for (let i = 0; i < FILM_TOP_RATED_COUNT; i++) {
-  renderFilmCard(filmListTopRatedContainer, filmList[i]);
-}
-for (let i = 0; i < FILM_MOST_COMMENTED_COUNT; i++) {
-  renderFilmCard(filmListMostCommentedContainer, filmList[i]);
+  renderFilmCard(filmListComponent.allListElement, filmList[i]);
 }
 
+for (let i = 0; i < FILM_TOP_RATED_COUNT; i++) {
+  renderFilmCard(filmListComponent.topRatedListElement, filmList[i]);
+}
+
+for (let i = 0; i < FILM_MOST_COMMENTED_COUNT; i++) {
+  renderFilmCard(filmListComponent.mostCommentedListElement, filmList[i]);
+}
 
 if (filmList.length > FILM_COUNT_PER_STEP) {
   let renderFilmCount = FILM_COUNT_PER_STEP;
   const showMoreComponent = new ShowButtonView();
-  render(filmListContainer, showMoreComponent.element, RenderPosition.AFTEREND);
+  render(filmListComponent.allListElement, showMoreComponent.element, RenderPosition.AFTEREND);
 
   showMoreComponent.element.addEventListener('click', (evt) => {
     evt.preventDefault();
     filmList
       .slice(renderFilmCount, renderFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => {
-        renderFilmCard(filmListContainer, film);
+        renderFilmCard(filmListComponent.allListElement, film);
       });
 
     renderFilmCount += FILM_COUNT_PER_STEP;

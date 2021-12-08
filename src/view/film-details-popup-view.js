@@ -186,7 +186,7 @@ export default class FilmDetailsPopupView {
 
   get closeButtonElement() {
     if(!this.#closeButtonElement) {
-      return this.element.querySelector('.film-details__close-btn');
+      this.#closeButtonElement = this.element.querySelector('.film-details__close-btn');
     }
     return this.#closeButtonElement;
   }
