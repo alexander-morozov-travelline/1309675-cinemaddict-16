@@ -1,4 +1,5 @@
 import {getFormattedDate} from '../util';
+import {createElement} from '../render';
 
 const createGenresTemplate = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -26,7 +27,7 @@ const createItemComment = (comment) => {
 
 const createCommentTemplate = (commentList) => commentList.map((comment) => createItemComment(comment)).join('');
 
-export const createFilmDetailsPopupTemplate = (film) => {
+const createFilmDetailsPopupTemplate = (film) => {
   const {
     title,
     titleOriginal,
@@ -162,3 +163,35 @@ export const createFilmDetailsPopupTemplate = (film) => {
     </form>
   </section>`;
 };
+
+export default class FilmDetailsPopupView {
+  #element = null;
+  #film = null;
+  #closeButtonElement = null;
+
+  constructor(film) {
+    this.#film = film;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmDetailsPopupTemplate(this.#film);
+  }
+
+  get closeButtonElement() {
+    if(!this.#closeButtonElement) {
+      this.#closeButtonElement = this.element.querySelector('.film-details__close-btn');
+    }
+    return this.#closeButtonElement;
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

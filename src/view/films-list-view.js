@@ -1,3 +1,5 @@
+import {createElement} from '../render';
+
 const filmList = {
   ALL_FILMS: 'allFilms',
   TOP_RATED: 'topRated',
@@ -33,8 +35,51 @@ const itemFilmsListTemplate = (param) => {
 
 const generateFilmsList = (params) => params.map( (param) => itemFilmsListTemplate(param)).join('');
 
-export const createFilmsListTemplate = () => (
+const createFilmsListTemplate = () => (
   `<section class="films">
     ${generateFilmsList(filmListParams)}
   </section>`
 );
+
+export default class FilmsListView {
+  #element = null;
+  #filmListElements = {
+    [filmList.ALL_FILMS]: null,
+    [filmList.TOP_RATED]: null,
+    [filmList.MOST_COMMENTED]: null,
+  }
+
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmsListTemplate();
+  }
+
+  getFilmList(listId){
+    if(!this.#filmListElements[listId]) {
+      this.#filmListElements[listId] = this.element.querySelector(`#${listId} .films-list__container`);
+    }
+    return this.#filmListElements[listId];
+  }
+
+  get allListElement() {
+    return this.getFilmList(filmList.ALL_FILMS);
+  }
+
+  get topRatedListElement() {
+    return this.getFilmList(filmList.TOP_RATED);
+  }
+
+  get mostCommentedListElement() {
+    return this.getFilmList(filmList.MOST_COMMENTED);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

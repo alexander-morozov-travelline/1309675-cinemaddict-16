@@ -1,7 +1,8 @@
 import {truncateText} from '../util';
 import {MAX_TEXT_LENGTH_ON_CARD} from '../const';
+import {createElement} from '../render';
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {
     title,
     runtime,
@@ -37,28 +38,34 @@ export const createFilmCardTemplate = (film) => {
     </article>`;
 };
 
-//@todo: начал делать, понял что пока рано, оставлю для следующей по списку задачи
-/*export default class FilmCardView {
+export default class FilmCardView {
   #element = null;
-  #card = null;
+  #film = null;
+  #cardLinkElement
 
-  constructor(card) {
-    this.#card = card;
+  constructor(film) {
+    this.#film = film;
   }
 
   get element() {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-
     return this.#element;
   }
 
   get template() {
-    return createFilmCardTemplate(this.#card);
+    return createFilmCardTemplate(this.#film);
+  }
+
+  get cardLinkElement() {
+    if(!this.#cardLinkElement) {
+      this.#cardLinkElement = this.element.querySelector('.film-card__link');
+    }
+    return this.#cardLinkElement;
   }
 
   removeElement() {
     this.#element = null;
   }
-}*/
+}
