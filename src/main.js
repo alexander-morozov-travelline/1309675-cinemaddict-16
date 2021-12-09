@@ -32,7 +32,7 @@ render(siteMainElement, new MainNavigationView(filters).element);
 render(siteMainElement, new SortView().element);
 render(siteStatisticsElement, new StatisticView().element);
 
-if(filmList.length) {
+if(typeof filmList !== 'undefined' && filmList.length) {
   render(siteMainElement, filmListComponent.element);
 } else {
   render(siteMainElement, new FilmsListEmptyView().element);
