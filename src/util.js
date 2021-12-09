@@ -32,3 +32,5 @@ export const getTimeOutOfMinutes = (totalMinutes) => {
 export const truncateText = (text, length) =>  text.length > length ? `${text.slice(0, length)}...` : text;
 
 export const getFormattedDate = (date, format) => dayjs(date).format(format);
+
+export const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
