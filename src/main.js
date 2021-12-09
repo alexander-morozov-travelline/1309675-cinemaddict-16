@@ -10,6 +10,7 @@ import StatisticView from './view/statistic-view';
 import { generateFilm } from './mock/film-card';
 import { generateFilter } from './mock/filter';
 import { isEscEvent } from './util';
+import FilmsListEmptyView from './view/films-list-empty-view';
 
 const FILM_COUNT = 20;
 const FILM_COUNT_PER_STEP = 5;
@@ -24,13 +25,18 @@ const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
 const siteStatisticsElement = siteFooterElement.querySelector('.footer__statistics');
 
-const filmListComponent = new FilmsListView(filmList.length);
+const filmListComponent = new FilmsListView(filmList);
 
 render(siteHeaderElement, new ProfileView().element);
 render(siteMainElement, new MainNavigationView(filters).element);
 render(siteMainElement, new SortView().element);
-render(siteMainElement, filmListComponent.element);
 render(siteStatisticsElement, new StatisticView().element);
+
+if(filmList.length) {
+  render(siteMainElement, filmListComponent.element);
+} else {
+  render(siteMainElement, new FilmsListEmptyView().element);
+}
 
 let onKeyDown = null;
 let onCloseFilmDetailPopup = null;
@@ -72,15 +78,13 @@ const renderFilmCard = (container, film) => {
   filmCardComponent.cardLinkElement.addEventListener('click', (clickEvent) => {
     clickEvent.preventDefault();
     addFilmDetailsPopup(film);
-    filmDetailPopupComponent.closeButtonElement.addEventListener('click',
-      (closeEvent) => onCloseFilmDetailPopup(closeEvent)
-    );
-    document.addEventListener('keydown', (keyEvent) =>  onKeyDown(keyEvent));
+    filmDetailPopupComponent.closeButtonElement.addEventListener('click', onCloseFilmDetailPopup);
+    document.addEventListener('keydown', onKeyDown);
   });
 };
 
 const renderFilmList = (container, count) => {
-  for (let i = 0; i < count && i<filmList.length; i++) {
+  for (let i = 0; i < count && i < filmList.length; i++) {
     renderFilmCard(container, filmList[i]);
   }
 };

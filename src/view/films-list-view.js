@@ -1,6 +1,6 @@
 import {createElement} from '../render';
 
-const filmList = {
+const filmListNames = {
   ALL_FILMS: 'allFilms',
   TOP_RATED: 'topRated',
   MOST_COMMENTED: 'mostCommented',
@@ -8,17 +8,17 @@ const filmList = {
 
 const filmListParams = [
   {
-    id: filmList.ALL_FILMS,
+    id: filmListNames.ALL_FILMS,
     title: 'All movies. Upcoming',
     isExtra: false,
   },
   {
-    id: filmList.TOP_RATED,
+    id: filmListNames.TOP_RATED,
     title: 'Top rated',
     isExtra: true,
   },
   {
-    id: filmList.MOST_COMMENTED,
+    id: filmListNames.MOST_COMMENTED,
     title: 'Most commented',
     isExtra: true,
   }
@@ -41,27 +41,19 @@ const createFilmsListTemplate = () => (
   </section>`
 );
 
-const createEmptyFilmsListTemplate = () => (
-  `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title">There are no movies in our database</h2>
-    </section>
-  </section>`
-);
-
 export default class FilmsListView {
   #element = null;
 
   #filmListElements = {
-    [filmList.ALL_FILMS]: null,
-    [filmList.TOP_RATED]: null,
-    [filmList.MOST_COMMENTED]: null,
+    [filmListNames.ALL_FILMS]: null,
+    [filmListNames.TOP_RATED]: null,
+    [filmListNames.MOST_COMMENTED]: null,
   };
 
-  #countFilms = 0;
+  #filmList = [];
 
-  constructor(countFilms = 0) {
-    this.#countFilms = countFilms;
+  constructor(filmList = []) {
+    this.#filmList = filmList;
   }
 
   get element() {
@@ -72,7 +64,7 @@ export default class FilmsListView {
   }
 
   get template() {
-    return this.#countFilms ? createFilmsListTemplate() : createEmptyFilmsListTemplate();
+    return createFilmsListTemplate();
   }
 
   getFilmList(listId){
@@ -83,15 +75,15 @@ export default class FilmsListView {
   }
 
   get allListElement() {
-    return this.getFilmList(filmList.ALL_FILMS);
+    return this.getFilmList(filmListNames.ALL_FILMS);
   }
 
   get topRatedListElement() {
-    return this.getFilmList(filmList.TOP_RATED);
+    return this.getFilmList(filmListNames.TOP_RATED);
   }
 
   get mostCommentedListElement() {
-    return this.getFilmList(filmList.MOST_COMMENTED);
+    return this.getFilmList(filmListNames.MOST_COMMENTED);
   }
 
   removeElement() {
