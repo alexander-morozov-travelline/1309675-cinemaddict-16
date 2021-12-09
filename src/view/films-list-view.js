@@ -50,12 +50,6 @@ export default class FilmsListView {
     [filmListNames.MOST_COMMENTED]: null,
   };
 
-  #filmList = [];
-
-  constructor(filmList = []) {
-    this.#filmList = filmList;
-  }
-
   get element() {
     if(!this.#element) {
       this.#element = createElement(this.template);
