@@ -41,12 +41,27 @@ const createFilmsListTemplate = () => (
   </section>`
 );
 
+const createEmptyFilmsListTemplate = () => (
+  `<section class="films">
+    <section class="films-list">
+      <h2 class="films-list__title">There are no movies in our database</h2>
+    </section>
+  </section>`
+);
+
 export default class FilmsListView {
   #element = null;
+
   #filmListElements = {
     [filmList.ALL_FILMS]: null,
     [filmList.TOP_RATED]: null,
     [filmList.MOST_COMMENTED]: null,
+  };
+
+  #countFilms = 0;
+
+  constructor(countFilms = 0) {
+    this.#countFilms = countFilms;
   }
 
   get element() {
@@ -57,7 +72,7 @@ export default class FilmsListView {
   }
 
   get template() {
-    return createFilmsListTemplate();
+    return this.#countFilms ? createFilmsListTemplate() : createEmptyFilmsListTemplate();
   }
 
   getFilmList(listId){
