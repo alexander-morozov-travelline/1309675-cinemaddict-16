@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const filmListNames = {
   ALL_FILMS: 'allFilms',
@@ -41,21 +41,12 @@ const createFilmsListTemplate = () => (
   </section>`
 );
 
-export default class FilmsListView {
-  #element = null;
-
+export default class FilmsListView extends AbstractView {
   #filmListElements = {
     [filmListNames.ALL_FILMS]: null,
     [filmListNames.TOP_RATED]: null,
     [filmListNames.MOST_COMMENTED]: null,
   };
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
 
   get template() {
     return createFilmsListTemplate();
@@ -78,9 +69,5 @@ export default class FilmsListView {
 
   get mostCommentedListElement() {
     return this.getFilmList(filmListNames.MOST_COMMENTED);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

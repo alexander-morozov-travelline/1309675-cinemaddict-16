@@ -1,6 +1,6 @@
-import {truncateText} from '../util';
+import {truncateText} from '../utils/common';
 import {MAX_TEXT_LENGTH_ON_CARD} from '../const';
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createFilmCardTemplate = (film) => {
   const {
@@ -38,20 +38,13 @@ const createFilmCardTemplate = (film) => {
     </article>`;
 };
 
-export default class FilmCardView {
-  #element = null;
+export default class FilmCardView extends AbstractView{
   #film = null;
   #cardLinkElement
 
   constructor(film) {
+    super();
     this.#film = film;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
@@ -65,7 +58,13 @@ export default class FilmCardView {
     return this.#cardLinkElement;
   }
 
-  removeElement() {
-    this.#element = null;
+  setClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.cardLinkElement.addEventListener('click', this.#clickHandler);
+  }
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
   }
 }
