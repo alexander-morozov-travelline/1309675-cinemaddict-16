@@ -1,5 +1,5 @@
-import {getFormattedDate} from '../util';
-import {createElement} from '../render';
+import {getFormattedDate} from '../utils/common';
+import AbstractView from './abstract-view';
 
 const createGenresTemplate = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -164,20 +164,13 @@ const createFilmDetailsPopupTemplate = (film) => {
   </section>`;
 };
 
-export default class FilmDetailsPopupView {
-  #element = null;
+export default class FilmDetailsPopupView extends AbstractView {
   #film = null;
   #closeButtonElement = null;
 
   constructor(film) {
+    super();
     this.#film = film;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
@@ -191,7 +184,17 @@ export default class FilmDetailsPopupView {
     return this.#closeButtonElement;
   }
 
-  removeElement() {
-    this.#element = null;
+  setCloseClickHandler = (callback) => {
+    this._callback.closeClick = callback;
+    this.closeButtonElement.addEventListener('click', this.#closeClickHandler);
+  }
+
+  removeCloseClickHandler = () => {
+    this.closeButtonElement.removeEventListener('click', this.#closeClickHandler);
+  }
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeClick();
   }
 }

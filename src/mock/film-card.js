@@ -7,7 +7,7 @@ import {
   getRandomInteger,
   getRandomFloat,
   getTimeOutOfMinutes
-} from '../util';
+} from '../utils/common';
 
 const generateTitle = () => {
   const TITLES = [

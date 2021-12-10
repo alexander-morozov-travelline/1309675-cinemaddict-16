@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './render.js';
+import {render, RenderPosition} from './utils/render.js';
 import FilmCardView from './view/film-card-view';
 import FilmDetailsPopupView from './view/film-details-popup-view';
 import FilmsListView from './view/films-list-view';
@@ -9,7 +9,7 @@ import SortView from './view/sort-view';
 import StatisticView from './view/statistic-view';
 import { generateFilm } from './mock/film-card';
 import { generateFilter } from './mock/filter';
-import { isEscEvent } from './util';
+import { isEscEvent } from './utils/common';
 import FilmsListEmptyView from './view/films-list-empty-view';
 
 const FILM_COUNT = 20;
@@ -27,24 +27,23 @@ const siteStatisticsElement = siteFooterElement.querySelector('.footer__statisti
 
 const filmListComponent = new FilmsListView();
 
-render(siteHeaderElement, new ProfileView().element);
-render(siteMainElement, new MainNavigationView(filters).element);
-render(siteMainElement, new SortView().element);
-render(siteStatisticsElement, new StatisticView().element);
+render(siteHeaderElement, new ProfileView());
+render(siteMainElement, new MainNavigationView(filters));
+render(siteMainElement, new SortView());
+render(siteStatisticsElement, new StatisticView());
 
-if(filmList.length) {
-  render(siteMainElement, filmListComponent.element);
+if(typeof filmList !== 'undefined' && filmList.length) {
+  render(siteMainElement, filmListComponent);
 } else {
-  render(siteMainElement, new FilmsListEmptyView().element);
+  render(siteMainElement, new FilmsListEmptyView());
 }
 
 let onKeyDown = null;
-let onCloseFilmDetailPopup = null;
 let filmDetailPopupComponent = null;
 
 const addFilmDetailsPopup = (film) => {
   filmDetailPopupComponent = new FilmDetailsPopupView(film);
-  render(siteFooterElement, filmDetailPopupComponent.element, RenderPosition.AFTEREND);
+  render(siteFooterElement, filmDetailPopupComponent, RenderPosition.AFTEREND);
   document.body.classList.add('hide-overflow');
 };
 
@@ -53,16 +52,13 @@ const removePopup = () => {
   document.body.classList.remove('hide-overflow');
 
   if(filmDetailPopupComponent !== null) {
-    filmDetailPopupComponent.closeButtonElement.removeEventListener('click', onCloseFilmDetailPopup);
+    filmDetailPopupComponent.removeCloseClickHandler();
     filmDetailPopupComponent.element.remove();
     filmDetailPopupComponent = null;
   }
 };
 
-onCloseFilmDetailPopup = (evt) => {
-  evt.preventDefault();
-  removePopup(filmDetailPopupComponent);
-};
+const onCloseFilmDetailPopup = () => removePopup(filmDetailPopupComponent);
 
 onKeyDown = (evt) => {
   if (isEscEvent(evt)) {
@@ -73,12 +69,11 @@ onKeyDown = (evt) => {
 
 const renderFilmCard = (container, film) => {
   const filmCardComponent = new FilmCardView(film);
-  render(container, filmCardComponent.element);
+  render(container, filmCardComponent);
 
-  filmCardComponent.cardLinkElement.addEventListener('click', (clickEvent) => {
-    clickEvent.preventDefault();
+  filmCardComponent.setClickHandler(() => {
     addFilmDetailsPopup(film);
-    filmDetailPopupComponent.closeButtonElement.addEventListener('click', onCloseFilmDetailPopup);
+    filmDetailPopupComponent.setCloseClickHandler(onCloseFilmDetailPopup);
     document.addEventListener('keydown', onKeyDown);
   });
 };
@@ -96,10 +91,9 @@ renderFilmList(filmListComponent.mostCommentedListElement, FILM_MOST_COMMENTED_C
 if (filmList.length > FILM_COUNT_PER_STEP) {
   let renderFilmCount = FILM_COUNT_PER_STEP;
   const showMoreComponent = new ShowButtonView();
-  render(filmListComponent.allListElement, showMoreComponent.element, RenderPosition.AFTEREND);
+  render(filmListComponent.allListElement, showMoreComponent, RenderPosition.AFTEREND);
 
-  showMoreComponent.element.addEventListener('click', (evt) => {
-    evt.preventDefault();
+  showMoreComponent.setClickHandler(() => {
     filmList
       .slice(renderFilmCount, renderFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => {
