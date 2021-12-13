@@ -189,10 +189,6 @@ export default class FilmDetailsPopupView extends AbstractView {
     this.closeButtonElement.addEventListener('click', this.#closeClickHandler);
   }
 
-  removeCloseClickHandler = () => {
-    this.closeButtonElement.removeEventListener('click', this.#closeClickHandler);
-  }
-
   #closeClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.closeClick();
