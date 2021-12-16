@@ -2,9 +2,8 @@ import {render} from './utils/render.js';
 
 import MainNavigationView from './view/main-navigation-view';
 import ProfileView from './view/profile-view';
-import SortView from './view/sort-view';
 import StatisticView from './view/statistic-view';
-import { generateFilm } from './mock/film-card';
+import { generateFilm } from './mock/film';
 import { generateFilter } from './mock/filter';
 import FilmsListEmptyView from './view/films-list-empty-view';
 import FilmListPresenter from './presenter/FilmListPresenter';
@@ -19,7 +18,6 @@ const siteFooterElement = document.querySelector('.footer');
 const siteStatisticsElement = siteFooterElement.querySelector('.footer__statistics');
 
 render(siteHeaderElement, new ProfileView());
-render(siteMainElement, new SortView());
 render(siteStatisticsElement, new StatisticView());
 
 

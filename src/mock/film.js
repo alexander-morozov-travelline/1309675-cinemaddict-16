@@ -8,6 +8,7 @@ import {
   getRandomFloat,
   getTimeOutOfMinutes
 } from '../utils/common';
+import {nanoid} from 'nanoid';
 
 const generateTitle = () => {
   const TITLES = [
@@ -206,6 +207,7 @@ export const generateFilm = () => {
   const title = generateTitle();
   const year = generateYear();
   return {
+    id: nanoid(),
     title: title,
     titleOriginal: title,
     director: generateDirector(),
