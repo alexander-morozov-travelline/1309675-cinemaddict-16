@@ -7,5 +7,5 @@ export const sortCommentCountDown = (film1, film2) =>
   film1.comments.length < film2.comments.length ? 1 : -1;
 
 export const sortReleaseDateDown = (film1, film2) =>
-  dayjs(film1.releaseDate).diff(dayjs(film2.releaseDate));
+  dayjs(film2.releaseDate).diff(dayjs(film1.releaseDate));
 

@@ -108,7 +108,7 @@ const createFilmDetailsPopupTemplate = (film) => {
           <button type="button"
                   class="film-details__control-button
                         film-details__control-button--watchlist
-                        ${activeClassName(isWatchList)}"
+                        ${activeClassName(!isWatchList)}"
                   id="watchlist" name="watchlist">
                   Add to watchlist
           </button>
@@ -167,6 +167,9 @@ const createFilmDetailsPopupTemplate = (film) => {
 export default class FilmDetailsPopupView extends AbstractView {
   #film = null;
   #closeButtonElement = null;
+  #buttonWatchListElement = null;
+  #buttonWatchedElement = null;
+  #buttonFavoriteElement = null;
 
   constructor(film) {
     super();
@@ -184,13 +187,64 @@ export default class FilmDetailsPopupView extends AbstractView {
     return this.#closeButtonElement;
   }
 
+  get cardWatchListElement() {
+    if(!this.#buttonWatchListElement) {
+      this.#buttonWatchListElement = this.element.querySelector('.film-details__control-button--watchlist');
+    }
+    return this.#buttonWatchListElement;
+  }
+
+  get cardWatchedElement() {
+    if(!this.#buttonWatchedElement) {
+      this.#buttonWatchedElement = this.element.querySelector('.film-details__control-button--watched');
+    }
+    return this.#buttonWatchedElement;
+  }
+
+  get cardFavoriteElement() {
+    if(!this.#buttonFavoriteElement) {
+      this.#buttonFavoriteElement = this.element.querySelector('.film-details__control-button--favorite');
+    }
+    return this.#buttonFavoriteElement;
+  }
+
   setCloseClickHandler = (callback) => {
     this._callback.closeClick = callback;
     this.closeButtonElement.addEventListener('click', this.#closeClickHandler);
   }
 
+  setWatchListHandler = (callback) => {
+    this._callback.watchListClick = callback;
+    this.cardWatchListElement.addEventListener('click', this.#watchListClickHandler);
+  }
+
+  setWatchedHandler = (callback) => {
+    this._callback.watchedClick = callback;
+    this.cardWatchedElement.addEventListener('click', this.#watchedClickHandler);
+  }
+
+  setFavoriteHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.cardFavoriteElement.addEventListener('click', this.#favoriteClickHandler);
+  }
+
   #closeClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.closeClick();
+  }
+
+  #watchListClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchListClick();
+  }
+
+  #watchedClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }

@@ -1,4 +1,4 @@
-import {remove, render} from '../utils/render';
+import {remove, render, replace} from '../utils/render';
 
 export class AbstractFilmPresenter {
   #container = null;
@@ -14,14 +14,21 @@ export class AbstractFilmPresenter {
 
   init(film) {
     this.#film = film;
+
+    const prevFilmComponent = this.filmComponent;
+
     this.initFilmComponent(film);
     this.filmComponent.setWatchListHandler(this.#handleWatchListClick);
     this.filmComponent.setWatchedHandler(this.#handleWatchedClick);
     this.filmComponent.setFavoriteHandler(this.#handleFavoriteClick);
-/*console.log(film);
-console.log(this.#container);
-console.log(this._filmComponent);*/
-    render(this.#container, this._filmComponent);
+
+    if(prevFilmComponent === null) {
+      render(this.#container, this._filmComponent);
+      return;
+    }
+
+    replace(this._filmComponent, prevFilmComponent);
+    remove(prevFilmComponent);
   }
 
   get filmComponent() {
@@ -34,6 +41,10 @@ console.log(this._filmComponent);*/
 
   get film() {
     return this.#film;
+  }
+
+  set film(film) {
+    this.#film = film;
   }
 
   destroy = () => {

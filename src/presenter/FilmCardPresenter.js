@@ -16,6 +16,6 @@ export class FilmCardPresenter extends AbstractFilmPresenter {
     }
 
     #handleCardClick = () => {
-      this._callback.cardClick();
+      this._callback.cardClick(this.film);
     }
 }

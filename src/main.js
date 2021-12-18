@@ -8,7 +8,7 @@ import { generateFilter } from './mock/filter';
 import FilmsListEmptyView from './view/films-list-empty-view';
 import FilmListPresenter from './presenter/FilmListPresenter';
 
-const FILM_COUNT = 20;
+const FILM_COUNT = 15;
 
 const filmList = Array.from({length: FILM_COUNT}, generateFilm);
 
