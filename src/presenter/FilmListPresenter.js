@@ -82,7 +82,11 @@ export default class FilmListPresenter {
   #handleFilmChange = (updatedFilm) => {
     this.#filmList = updateItem(this.#filmList, updatedFilm);
     this.#sourceFilmList = updateItem(this.#sourceFilmList, updatedFilm);
-    this.#filmCardPresenter.get(updatedFilm.id).init(updatedFilm);
+
+    this.#filmCardPresenter.get(FilmListNames.ALL_FILMS + updatedFilm.id)?.init(updatedFilm);
+    this.#filmCardPresenter.get(FilmListNames.TOP_RATED + updatedFilm.id)?.init(updatedFilm);
+    this.#filmCardPresenter.get(FilmListNames.MOST_COMMENTED + updatedFilm.id)?.init(updatedFilm);
+
     if(this.#filmDetailsPopupPresenter.getOpenCardFilmId() === updatedFilm.id) {
       this.#filmDetailsPopupPresenter.init(updatedFilm);
     }
