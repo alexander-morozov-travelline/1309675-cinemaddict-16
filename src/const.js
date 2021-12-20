@@ -17,3 +17,9 @@ export const FilmListNames = {
   TOP_RATED: 'topRated',
   MOST_COMMENTED: 'mostCommented',
 };
+
+export const FilmAtionType = {
+  ADD_WATCH_LIST: 'watchList',
+  MARK_WATCHED: 'watched',
+  MARK_FAVORITE: 'favorite',
+};
