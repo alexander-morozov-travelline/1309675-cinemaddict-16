@@ -1,24 +1,19 @@
 import AbstractView from './abstract-view';
-
-const filmListNames = {
-  ALL_FILMS: 'allFilms',
-  TOP_RATED: 'topRated',
-  MOST_COMMENTED: 'mostCommented',
-};
+import {FilmListNames} from '../const';
 
 const filmListParams = [
   {
-    id: filmListNames.ALL_FILMS,
+    id: FilmListNames.ALL_FILMS,
     title: 'All movies. Upcoming',
     isExtra: false,
   },
   {
-    id: filmListNames.TOP_RATED,
+    id: FilmListNames.TOP_RATED,
     title: 'Top rated',
     isExtra: true,
   },
   {
-    id: filmListNames.MOST_COMMENTED,
+    id: FilmListNames.MOST_COMMENTED,
     title: 'Most commented',
     isExtra: true,
   }
@@ -43,9 +38,9 @@ const createFilmsListTemplate = () => (
 
 export default class FilmsListView extends AbstractView {
   #filmListElements = {
-    [filmListNames.ALL_FILMS]: null,
-    [filmListNames.TOP_RATED]: null,
-    [filmListNames.MOST_COMMENTED]: null,
+    [FilmListNames.ALL_FILMS]: null,
+    [FilmListNames.TOP_RATED]: null,
+    [FilmListNames.MOST_COMMENTED]: null,
   };
 
   get template() {
@@ -60,14 +55,15 @@ export default class FilmsListView extends AbstractView {
   }
 
   get allListElement() {
-    return this.getFilmList(filmListNames.ALL_FILMS);
+    return this.getFilmList(FilmListNames.ALL_FILMS);
   }
 
   get topRatedListElement() {
-    return this.getFilmList(filmListNames.TOP_RATED);
+    return this.getFilmList(FilmListNames.TOP_RATED);
   }
 
   get mostCommentedListElement() {
-    return this.getFilmList(filmListNames.MOST_COMMENTED);
+    return this.getFilmList(FilmListNames.MOST_COMMENTED);
   }
+
 }

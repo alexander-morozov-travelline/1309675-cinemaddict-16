@@ -1,5 +1,6 @@
 import {getFormattedDate} from '../utils/common';
 import AbstractView from './abstract-view';
+import {FilmAtionType} from '../const.js';
 
 const createGenresTemplate = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -105,21 +106,21 @@ const createFilmDetailsPopupTemplate = (film) => {
           </div>
         </div>
         <section class="film-details__controls">
-          <button type="button"
+          <button type="button" data-action-type="${FilmAtionType.ADD_WATCH_LIST}"
                   class="film-details__control-button
                         film-details__control-button--watchlist
-                        ${activeClassName(isWatchList)}"
+                        ${activeClassName(!isWatchList)}"
                   id="watchlist" name="watchlist">
                   Add to watchlist
           </button>
-          <button type="button"
+          <button type="button" data-action-type="${FilmAtionType.MARK_WATCHED}"
                   class="film-details__control-button
                         film-details__control-button--watched
                         ${activeClassName(isWatched)}"
                   id="watched" name="watched">
                   Already watched
           </button>
-          <button type="button"
+          <button type="button" data-action-type="${FilmAtionType.MARK_FAVORITE}"
                   class="film-details__control-button
                         film-details__control-button--favorite
                         ${activeClassName(isFavorite)}"
@@ -167,6 +168,9 @@ const createFilmDetailsPopupTemplate = (film) => {
 export default class FilmDetailsPopupView extends AbstractView {
   #film = null;
   #closeButtonElement = null;
+  #buttonWatchListElement = null;
+  #buttonWatchedElement = null;
+  #buttonFavoriteElement = null;
 
   constructor(film) {
     super();
@@ -189,12 +193,20 @@ export default class FilmDetailsPopupView extends AbstractView {
     this.closeButtonElement.addEventListener('click', this.#closeClickHandler);
   }
 
-  removeCloseClickHandler = () => {
-    this.closeButtonElement.removeEventListener('click', this.#closeClickHandler);
-  }
-
   #closeClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.closeClick();
+  }
+
+  setActionHandler = (callback) => {
+    this._callback.action = callback;
+    this.element.querySelectorAll('button').forEach((button) => {
+      button.addEventListener('click', this.#actionClickHandler);
+    });
+  }
+
+  #actionClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.action(evt.target.dataset.actionType);
   }
 }
