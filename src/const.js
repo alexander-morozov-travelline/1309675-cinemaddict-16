@@ -18,7 +18,7 @@ export const FilmListNames = {
   MOST_COMMENTED: 'mostCommented',
 };
 
-export const FilmAtionType = {
+export const FilmAction = {
   ADD_WATCH_LIST: 'watchList',
   MARK_WATCHED: 'watched',
   MARK_FAVORITE: 'favorite',

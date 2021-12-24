@@ -1,6 +1,6 @@
 import {getFormattedDate} from '../utils/common';
 import AbstractView from './abstract-view';
-import {FilmAtionType} from '../const.js';
+import {FilmAction} from '../const.js';
 
 const createGenresTemplate = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -106,21 +106,21 @@ const createFilmDetailsPopupTemplate = (film) => {
           </div>
         </div>
         <section class="film-details__controls">
-          <button type="button" data-action-type="${FilmAtionType.ADD_WATCH_LIST}"
+          <button type="button" data-action-type="${FilmAction.ADD_WATCH_LIST}"
                   class="film-details__control-button
                         film-details__control-button--watchlist
                         ${activeClassName(!isWatchList)}"
                   id="watchlist" name="watchlist">
                   Add to watchlist
           </button>
-          <button type="button" data-action-type="${FilmAtionType.MARK_WATCHED}"
+          <button type="button" data-action-type="${FilmAction.MARK_WATCHED}"
                   class="film-details__control-button
                         film-details__control-button--watched
                         ${activeClassName(isWatched)}"
                   id="watched" name="watched">
                   Already watched
           </button>
-          <button type="button" data-action-type="${FilmAtionType.MARK_FAVORITE}"
+          <button type="button" data-action-type="${FilmAction.MARK_FAVORITE}"
                   class="film-details__control-button
                         film-details__control-button--favorite
                         ${activeClassName(isFavorite)}"
