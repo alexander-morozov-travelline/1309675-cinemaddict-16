@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card-view';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import FilmDetailsPopupView from '../view/film-details-popup-view';
-import {FilmAtionType} from '../const';
+import {FilmAction} from '../const';
 
 export class FilmPresenter {
   #container = null;
@@ -92,15 +92,15 @@ export class FilmPresenter {
 
   #handlerFilmAction = (type) => {
     switch (type) {
-      case FilmAtionType.ADD_WATCH_LIST:
+      case FilmAction.ADD_WATCH_LIST:
         this.#changeData({...this.#film, isWatchList: !this.#film.isWatchList});
         break;
 
-      case FilmAtionType.MARK_WATCHED:
+      case FilmAction.MARK_WATCHED:
         this.#changeData({...this.#film, isWatched: !this.#film.isWatched});
         break;
 
-      case FilmAtionType.MARK_FAVORITE:
+      case FilmAction.MARK_FAVORITE:
         this.#changeData({...this.#film, isFavorite: !this.#film.isFavorite});
         break;
 
