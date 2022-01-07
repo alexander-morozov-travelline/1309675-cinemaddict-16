@@ -1,5 +1,5 @@
 import {getFormattedDate} from '../utils/common';
-import {FilmAction} from '../const.js';
+import {Emoji, FilmAction} from '../const.js';
 import SmartView from './smart-view';
 
 const createGenresTemplate = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
@@ -146,19 +146,19 @@ const createFilmDetailsPopupTemplate = (film) => {
               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
             </label>
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji('smile')} type="radio" id="emoji-smile" value="smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji(Emoji.SMILE)} type="radio" id="emoji-smile" value="${Emoji.SMILE}">
               <label class="film-details__emoji-label" for="emoji-smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji('sleeping')} type="radio" id="emoji-sleeping" value="sleeping">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji(Emoji.SLEEPING)} type="radio" id="emoji-sleeping" value="${Emoji.SLEEPING}">
               <label class="film-details__emoji-label" for="emoji-sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji('puke')} type="radio" id="emoji-puke" value="puke">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji(Emoji.PUKE)} type="radio" id="emoji-puke" value="${Emoji.PUKE}">
               <label class="film-details__emoji-label" for="emoji-puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji('angry')} type="radio" id="emoji-angry" value="angry">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji(Emoji.ANGRY)} type="radio" id="emoji-angry" value="${Emoji.ANGRY}">
               <label class="film-details__emoji-label" for="emoji-angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
@@ -173,7 +173,7 @@ const createFilmDetailsPopupTemplate = (film) => {
 export default class FilmDetailsPopupView extends SmartView {
   constructor(film) {
     super();
-    this._data = FilmDetailsPopupView.parseTaskToData(film);
+    this._data = FilmDetailsPopupView.parseFilmToData(film);
 
     this.#setInnerHandlers();
   }
@@ -208,12 +208,12 @@ export default class FilmDetailsPopupView extends SmartView {
     this._callback.action(evt.target.dataset.actionType);
   }
 
-  static parseTaskToData = (film) => ({...film,
+  static parseFilmToData = (film) => ({...film,
     comment: '',
     commentEmoji: null,
   });
 
-  static parseDataToTask = (data) => {
+  static parseDataToFilm = (data) => {
     const film = {...data};
     delete film.comment;
     delete film.commentEmoji;
@@ -223,7 +223,7 @@ export default class FilmDetailsPopupView extends SmartView {
 
   reset = (film) => {
     this.updateData(
-      FilmDetailsPopupView.parseTaskToData(film),
+      FilmDetailsPopupView.parseFilmToData(film),
     );
   }
 

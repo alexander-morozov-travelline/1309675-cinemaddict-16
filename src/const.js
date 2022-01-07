@@ -23,3 +23,10 @@ export const FilmAction = {
   MARK_WATCHED: 'watched',
   MARK_FAVORITE: 'favorite',
 };
+
+export const Emoji = {
+  SMILE: 'smile',
+  SLEEPING: 'sleeping',
+  PUKE: 'puke',
+  ANGRY: 'angry',
+};
