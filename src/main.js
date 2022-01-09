@@ -1,12 +1,12 @@
 import {render} from './utils/render.js';
 
-import MainNavigationView from './view/main-navigation-view';
 import ProfileView from './view/profile-view';
 import StatisticView from './view/statistic-view';
 import { generateFilm } from './mock/film';
-import { generateFilter } from './mock/filter';
-import FilmsListEmptyView from './view/films-list-empty-view';
-import FilmListPresenter from './presenter/FilmListPresenter';
+import FilmListPresenter from './presenter/film-list-presenter';
+import FilterPresenter from './presenter/filter-presenter';
+import FilmsModel from './model/films-model';
+import FilterModel from './model/filter-model.js';
 
 const FILM_COUNT = 15;
 
@@ -20,14 +20,13 @@ const siteStatisticsElement = siteFooterElement.querySelector('.footer__statisti
 render(siteHeaderElement, new ProfileView());
 render(siteStatisticsElement, new StatisticView());
 
+const filmsModel = new FilmsModel();
+filmsModel.filmsList = filmList;
 
-if(filmList !== 'undefined' && filmList.length) {
-  const filters = generateFilter(filmList);
-  render(siteMainElement, new MainNavigationView(filters));
+const filterModel = new FilterModel();
 
-  const movieListPresenter = new FilmListPresenter(siteMainElement);
-  movieListPresenter.init(filmList);
+const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const movieListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel);
 
-} else {
-  render(siteMainElement, new FilmsListEmptyView());
-}
+filterPresenter.init();
+movieListPresenter.init();

@@ -30,3 +30,16 @@ export const Emoji = {
   PUKE: 'puke',
   ANGRY: 'angry',
 };
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const FilterType = {
+  ALL: 'all',
+  WATCH_LIST: 'watchList',
+  WATCHED: 'watched',
+  FAVORITES: 'favorites',
+};
