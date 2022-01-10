@@ -34,3 +34,5 @@ export const truncateText = (text, length) =>  text.length > length ? `${text.sl
 export const getFormattedDate = (date, format) => dayjs(date).format(format);
 
 export const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export const isCtrlEnterEvent = (evt) => evt.key === 'Enter' && evt.ctrlKey;

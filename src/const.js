@@ -24,6 +24,12 @@ export const FilmAction = {
   MARK_FAVORITE: 'favorite',
 };
 
+export const CommentAction = {
+  ADD: 'add',
+  DELETE: 'delete',
+};
+
+
 export const Emoji = {
   SMILE: 'smile',
   SLEEPING: 'sleeping',

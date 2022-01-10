@@ -1,7 +1,8 @@
 import FilmCardView from '../view/film-card-view';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import FilmDetailsPopupView from '../view/film-details-popup-view';
-import {FilmAction, UpdateType} from '../const';
+import {CommentAction, FilmAction, UpdateType} from '../const';
+import {isEscEvent} from '../utils/common';
 
 export class FilmPresenter {
   #container = null;
@@ -9,6 +10,7 @@ export class FilmPresenter {
   #film = null;
   #filmCardComponent = null;
   #filmDetailsPopupComponent = null;
+  #isPopupOpen = false;
   #siteFooterElement = document.querySelector('.footer');
   _callback = {};
 
@@ -41,14 +43,15 @@ export class FilmPresenter {
 
     this.#filmDetailsPopupComponent.setCloseClickHandler(this.#handleClosePopup);
     this.#filmDetailsPopupComponent.setActionHandler(this.#handlerFilmAction);
+    this.#filmDetailsPopupComponent.setCommentActionHandler(this.#handlerCommentAction);
 
-    document.addEventListener('keydown', this.#escKeyDownHandler);
     document.body.classList.add('hide-overflow');
 
     render(this.#siteFooterElement, this.#filmDetailsPopupComponent, RenderPosition.AFTEREND);
 
     if(prevFilmDetailsPopupComponent === null) {
       render(this.#siteFooterElement, this.#filmDetailsPopupComponent, RenderPosition.AFTEREND);
+      document.addEventListener('keydown', this.#escKeyDownHandler);
       return;
     }
 
@@ -67,8 +70,9 @@ export class FilmPresenter {
   }
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscEvent(evt)) {
       evt.preventDefault();
+      this.#filmDetailsPopupComponent.reset(this.#film);
       this.removePopup();
     }
   }
@@ -104,6 +108,33 @@ export class FilmPresenter {
         this.#changeData(UpdateType.MINOR, {...this.#film, isFavorite: !this.#film.isFavorite});
         break;
 
+    }
+  }
+
+  #handlerCommentAction = (type, id, newComment = null) => {
+    const newFilm = {...this.#film};
+    switch (type) {
+      case CommentAction.ADD:
+        newFilm.comments = [
+          ...newFilm.comments,
+          newComment
+        ];
+        this.#changeData(UpdateType.MINOR, newFilm);
+        break;
+
+      case CommentAction.DELETE: {
+        const index = this.#film.comments.findIndex((comment) => comment.id === id);
+
+        if (index === -1) {
+          throw new Error('Can\'t delete unexisting comment');
+        }
+        newFilm.comments = [
+          ...newFilm.comments.slice(0, index),
+          ...newFilm.comments.slice(index + 1),
+        ];
+        this.#changeData(UpdateType.MINOR, newFilm);
+        break;
+      }
     }
   }
 

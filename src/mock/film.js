@@ -190,6 +190,7 @@ const generateCommentDay = () => {
 };
 
 const generateComment = () => ({
+  id: nanoid(),
   emoji: generateEmoji(),
   text: generateCommentText(),
   author: generateCommentAuthor(),

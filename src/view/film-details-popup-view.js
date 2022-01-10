@@ -1,6 +1,8 @@
-import {getFormattedDate} from '../utils/common';
-import {Emoji, FilmAction} from '../const.js';
+import he from 'he';
+import {getFormattedDate, isCtrlEnterEvent} from '../utils/common';
+import {CommentAction, Emoji, FilmAction} from '../const.js';
 import SmartView from './smart-view';
+import {nanoid} from 'nanoid';
 
 const createGenresTemplate = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -20,7 +22,7 @@ const createItemComment = (comment) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${getFormattedDate(day, 'YYYY/MM/DD HH:mm')}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" data-comment-id="${111}">Delete</button>
         </p>
       </div>
     </li>`;
@@ -114,7 +116,7 @@ const createFilmDetailsPopupTemplate = (film) => {
           <button type="button" data-action-type="${FilmAction.ADD_WATCH_LIST}"
                   class="film-details__control-button
                         film-details__control-button--watchlist
-                        ${activeClassName(!isWatchList)}"
+                        ${activeClassName(isWatchList)}"
                   id="watchlist" name="watchlist">
                   Add to watchlist
           </button>
@@ -143,7 +145,7 @@ const createFilmDetailsPopupTemplate = (film) => {
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">${createCommentEmojiTemplate(commentEmoji)}</div>
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
             </label>
             <div class="film-details__emoji-list">
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" ${checkedEmoji(Emoji.SMILE)} type="radio" id="emoji-smile" value="${Emoji.SMILE}">
@@ -198,7 +200,7 @@ export default class FilmDetailsPopupView extends SmartView {
 
   setActionHandler = (callback) => {
     this._callback.action = callback;
-    this.element.querySelectorAll('button').forEach((button) => {
+    this.element.querySelectorAll('.film-details__control-button').forEach((button) => {
       button.addEventListener('click', this.#actionClickHandler);
     });
   }
@@ -206,6 +208,38 @@ export default class FilmDetailsPopupView extends SmartView {
   #actionClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.action(evt.target.dataset.actionType);
+  }
+
+  setCommentActionHandler = (callback) => {
+    this._callback.commentAction = callback;
+
+    this.element.querySelectorAll('.film-details__comment-delete').forEach((button) => {
+      button.addEventListener('click', this.#deleteCommentHandler);
+    });
+
+    document.addEventListener('keydown', this.#ctrEnterDownHandler);
+  }
+
+  #ctrEnterDownHandler = (evt) => {
+    if(isCtrlEnterEvent(evt)) {
+      evt.preventDefault(evt);
+      this.#addCommentHandler();
+    }
+  }
+
+  #deleteCommentHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.commentAction(CommentAction.DELETE, evt.target.dataset.id);
+  }
+
+  #addCommentHandler = () => {
+    const newComment = {
+      id: nanoid(),
+      emoji: `./images/emoji/${this._data.commentEmoji}.png`,
+      text: this._data.comment
+    };
+
+    this._callback.commentAction(CommentAction.ADD, null, newComment);
   }
 
   static parseFilmToData = (film) => ({...film,
@@ -225,12 +259,14 @@ export default class FilmDetailsPopupView extends SmartView {
     this.updateData(
       FilmDetailsPopupView.parseFilmToData(film),
     );
+    document.removeEventListener('keydown', this.#ctrEnterDownHandler);
   }
 
   #setInnerHandlers = () => {
     this.element.querySelectorAll('input[name="comment-emoji"]').forEach((input) => {
       input.addEventListener('click', this.#changeCommentEmoji);
     });
+
     this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
   }
 
@@ -252,6 +288,7 @@ export default class FilmDetailsPopupView extends SmartView {
     this.#setInnerHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
     this.setActionHandler(this._callback.action);
+    this.setCommentActionHandler(this._callback.commentAction);
   }
 
 }
