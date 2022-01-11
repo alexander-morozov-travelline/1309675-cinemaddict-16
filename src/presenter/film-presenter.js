@@ -1,22 +1,26 @@
 import FilmCardView from '../view/film-card-view';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import FilmDetailsPopupView from '../view/film-details-popup-view';
-import {CommentAction, FilmAction, UpdateType} from '../const';
-import {isEscEvent} from '../utils/common';
+import {FilmAction, UpdateType} from '../const';
+import {isCtrlEnterEvent, isEscEvent} from '../utils/common';
 
 export class FilmPresenter {
   #container = null;
   #changeData = null;
+  #changeComment = null;
   #film = null;
   #filmCardComponent = null;
   #filmDetailsPopupComponent = null;
-  #isPopupOpen = false;
   #siteFooterElement = document.querySelector('.footer');
+  #commentsModel;
+
   _callback = {};
 
-  constructor(container, changeData) {
+  constructor(container, changeData, commentsModel, changeComment) {
     this.#container = container;
     this.#changeData = changeData;
+    this.#commentsModel = commentsModel;
+    this.#changeComment = changeComment;
   }
 
   init = (film) => {
@@ -39,7 +43,8 @@ export class FilmPresenter {
 
   openPopup = () => {
     const prevFilmDetailsPopupComponent = this.#filmDetailsPopupComponent;
-    this.#filmDetailsPopupComponent = new FilmDetailsPopupView(this.#film);
+    const filmComments = this.#commentsModel.getCommentsByFilmId(this.#film.id);
+    this.#filmDetailsPopupComponent = new FilmDetailsPopupView(this.#film, filmComments);
 
     this.#filmDetailsPopupComponent.setCloseClickHandler(this.#handleClosePopup);
     this.#filmDetailsPopupComponent.setActionHandler(this.#handlerFilmAction);
@@ -52,6 +57,7 @@ export class FilmPresenter {
     if(prevFilmDetailsPopupComponent === null) {
       render(this.#siteFooterElement, this.#filmDetailsPopupComponent, RenderPosition.AFTEREND);
       document.addEventListener('keydown', this.#escKeyDownHandler);
+      document.addEventListener('keydown', this.#ctrEnterDownHandler);
       return;
     }
 
@@ -61,6 +67,7 @@ export class FilmPresenter {
 
   removePopup() {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    document.removeEventListener('keydown', this.#ctrEnterDownHandler);
     document.body.classList.remove('hide-overflow');
 
     if(this.#filmDetailsPopupComponent !== null) {
@@ -74,6 +81,13 @@ export class FilmPresenter {
       evt.preventDefault();
       this.#filmDetailsPopupComponent.reset(this.#film);
       this.removePopup();
+    }
+  }
+
+  #ctrEnterDownHandler = (evt) => {
+    if(isCtrlEnterEvent(evt)) {
+      evt.preventDefault(evt);
+      this.#filmDetailsPopupComponent.addCommentHandler();
     }
   }
 
@@ -111,31 +125,8 @@ export class FilmPresenter {
     }
   }
 
-  #handlerCommentAction = (type, id, newComment = null) => {
-    const newFilm = {...this.#film};
-    switch (type) {
-      case CommentAction.ADD:
-        newFilm.comments = [
-          ...newFilm.comments,
-          newComment
-        ];
-        this.#changeData(UpdateType.MINOR, newFilm);
-        break;
-
-      case CommentAction.DELETE: {
-        const index = this.#film.comments.findIndex((comment) => comment.id === id);
-
-        if (index === -1) {
-          throw new Error('Can\'t delete unexisting comment');
-        }
-        newFilm.comments = [
-          ...newFilm.comments.slice(0, index),
-          ...newFilm.comments.slice(index + 1),
-        ];
-        this.#changeData(UpdateType.MINOR, newFilm);
-        break;
-      }
-    }
+  #handlerCommentAction = (type, comment ) => {
+    this.#changeComment(type, UpdateType.MINOR, comment);
   }
 
   destroy = () => {

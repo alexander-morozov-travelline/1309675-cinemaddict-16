@@ -1,4 +1,4 @@
-import {FilmListNames, FilterType, SortType, UpdateType} from '../const.js';
+import {CommentAction, FilmListNames, FilterType, SortType, UpdateType} from '../const.js';
 import {render, RenderPosition, remove} from '../utils/render';
 import ShowButtonView from '../view/show-button-view';
 import FilmsListView from '../view/films-list-view';
@@ -16,6 +16,7 @@ export default class FilmListPresenter {
   #container = null;
   #filmsModel = null;
   #filterModel = null;
+  #commentsModel = null;
 
   #filmListComponent = new FilmsListView();
   #filmsListEmptyComponent = null;
@@ -28,10 +29,11 @@ export default class FilmListPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
 
-  constructor(container, filmsModel, filterModel) {
+  constructor(container, filmsModel, filterModel, commentsModel) {
     this.#container = container;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
+    this.#commentsModel = commentsModel;
   }
 
   get filmsList() {
@@ -116,6 +118,17 @@ export default class FilmListPresenter {
 
   }
 
+  #handleCommentChange = (actionType, updateType, update) => {
+    switch (actionType) {
+      case CommentAction.DELETE:
+        this.#commentsModel.deleteComment(updateType, update);
+        break;
+      case CommentAction.ADD:
+        this.#commentsModel.addComment(updateType, update);
+        break;
+    }
+  }
+
   #handleCardClick = (filmPresenter) => {
     if(this.#filmPresenterWithPopup) {
       this.#filmPresenterWithPopup.removePopup();
@@ -136,7 +149,7 @@ export default class FilmListPresenter {
 
   #renderFilmCard = (containerId, film) => {
     const container = this.#filmListComponent.getFilmList(containerId);
-    const filmPresenter = new FilmPresenter(container, this.#handleFilmChange);
+    const filmPresenter = new FilmPresenter(container, this.#handleFilmChange, this.#commentsModel, this.#handleCommentChange);
     filmPresenter.setCardClick(() =>this.#handleCardClick(filmPresenter));
     filmPresenter.setCardClose(this.#handleCardClose);
     filmPresenter.init(film);

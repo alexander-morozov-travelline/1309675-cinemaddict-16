@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {MAX_DAYS_GAP, MIN_MONTH_IN_YEAR, MAX_MONTH_IN_YEAR, MIN_DAYS_IN_MONTH, MAX_DAYS_IN_MONTH} from '../const';
+import {MIN_MONTH_IN_YEAR, MAX_MONTH_IN_YEAR, MIN_DAYS_IN_MONTH, MAX_DAYS_IN_MONTH} from '../const';
 import {
   getArrayRandLength,
   getRandomArrayElement,
@@ -152,56 +152,11 @@ const generateAgeRating = () => {
   return getRandomInteger(MIN_AGE, MAX_AGE);
 };
 
-const generateEmoji = () => {
-  const EMOJIS = [
-    './images/emoji/angry.png',
-    './images/emoji/puke.png',
-    './images/emoji/sleeping.png',
-    './images/emoji/smile.png'
-  ];
-  return getRandomArrayElement(EMOJIS);
-};
-
-const generateCommentText = () => {
-  const TEXTS = [
-    'Interesting setting and a good cast',
-    'Booooooooooring',
-    'Very very old. Meh',
-    'Almost two hours? Seriously?'
-  ];
-  return getRandomArrayElement(TEXTS);
-};
-
-const generateCommentAuthor = () => {
-  const AUTHORS = [
-    'Tim Macoveev',
-    'John Doe',
-    'Ivan Petrov',
-    'Den Ivanov',
-    'Kirill Sidorov',
-  ];
-  return getRandomArrayElement(AUTHORS);
-};
-
-const generateCommentDay = () => {
-  const daysGap = getRandomInteger(-MAX_DAYS_GAP, 0);
-
-  return dayjs().add(daysGap, 'day');
-};
-
-const generateComment = () => ({
-  id: nanoid(),
-  emoji: generateEmoji(),
-  text: generateCommentText(),
-  author: generateCommentAuthor(),
-  day: generateCommentDay(),
-});
-
 const generateComments = () => {
   const MIN_COMMENT_COUNT = 0;
   const MAX_COMMENT_COUNT = 5;
   const commentCount = getRandomInteger(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT);
-  return Array.from({length: commentCount}, generateComment);
+  return Array.from({length: commentCount}, () => nanoid());
 };
 
 export const generateFilm = () => {

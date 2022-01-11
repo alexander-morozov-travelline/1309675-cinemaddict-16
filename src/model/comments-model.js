@@ -11,6 +11,8 @@ export default class CommentsModel extends AbstractObservable {
     return this.#comments;
   }
 
+  getCommentsByFilmId = (idFilm) => this.comments.filter((comment) => comment.idFilm === idFilm);
+
   addComment = (updateType, update) => {
     this.#comments = [
       update,
