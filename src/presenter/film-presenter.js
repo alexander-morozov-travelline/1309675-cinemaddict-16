@@ -62,6 +62,8 @@ export class FilmPresenter {
     }
 
     replace(this.#filmDetailsPopupComponent, prevFilmDetailsPopupComponent);
+    this.#filmDetailsPopupComponent.setScroll(prevFilmDetailsPopupComponent.scrollOptions);
+
     remove(prevFilmDetailsPopupComponent);
   }
 
@@ -130,6 +132,9 @@ export class FilmPresenter {
   }
 
   destroy = () => {
+    if(this.#filmDetailsPopupComponent){
+      this.#filmDetailsPopupComponent.saveScroll();
+    }
     remove(this.#filmCardComponent);
   }
 }

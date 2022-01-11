@@ -2,7 +2,6 @@ import he from 'he';
 import {getFormattedDate} from '../utils/common';
 import {CommentAction, Emoji, FilmAction} from '../const.js';
 import SmartView from './smart-view';
-import {nanoid} from 'nanoid';
 
 const createGenresTemplate = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -14,10 +13,13 @@ const createItemComment = (comment) => {
     author,
     day
   } = comment;
-  return `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
+  const emojiBlock = !emoji ? ''
+    : `<span class="film-details__comment-emoji">
         <img src="${emoji}" width="55" height="55" alt="emoji">
-      </span>
+      </span>`;
+
+  return `<li class="film-details__comment">
+      ${emojiBlock}
       <div>
         <p class="film-details__comment-text">${text}</p>
         <p class="film-details__comment-info">
@@ -233,8 +235,8 @@ export default class FilmDetailsPopupView extends SmartView {
 
   addCommentHandler = () => {
     const newComment = {
-      id: nanoid(),
-      emoji: `./images/emoji/${this._data.commentEmoji}.png`,
+      idFilm: this._data.id,
+      emoji: this._data.commentEmoji ? `./images/emoji/${this._data.commentEmoji}.png` : null,
       text: this._data.comment
     };
 

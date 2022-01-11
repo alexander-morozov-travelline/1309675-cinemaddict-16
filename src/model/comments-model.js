@@ -1,4 +1,5 @@
 import AbstractObservable from '../utils/abstract-observable.js';
+import {nanoid} from 'nanoid';
 
 export default class CommentsModel extends AbstractObservable {
   #comments = [];
@@ -13,17 +14,21 @@ export default class CommentsModel extends AbstractObservable {
 
   getCommentsByFilmId = (idFilm) => this.comments.filter((comment) => comment.idFilm === idFilm);
 
-  addComment = (updateType, update) => {
+  getCommentIdsByFilmId = (idFilm) => Array.from(this.getCommentsByFilmId(idFilm), (comment) => comment.id);
+
+  addComment = (updateType, comment) => {
+    const newComment = {id: nanoid(), name: 'Bill', ...comment};
     this.#comments = [
-      update,
+      newComment,
       ...this.#comments,
     ];
 
-    this._notify(updateType, update);
+    this._notify(updateType, newComment);
   }
 
   deleteComment = (updateType, update) => {
     const index = this.#comments.findIndex((comment) => comment.id === update.id);
+    const deleteComment = {...this.#comments[index]};
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
@@ -33,7 +38,6 @@ export default class CommentsModel extends AbstractObservable {
       ...this.#comments.slice(0, index),
       ...this.#comments.slice(index + 1),
     ];
-
-    this._notify(updateType);
+    this._notify(updateType, deleteComment);
   }
 }

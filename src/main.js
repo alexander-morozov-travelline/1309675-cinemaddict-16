@@ -23,11 +23,11 @@ const siteStatisticsElement = siteFooterElement.querySelector('.footer__statisti
 render(siteHeaderElement, new ProfileView());
 render(siteStatisticsElement, new StatisticView());
 
-const filmsModel = new FilmsModel();
-filmsModel.filmsList = filmList;
-
 const commentsModel = new CommentsModel();
 commentsModel.comments = comments;
+
+const filmsModel = new FilmsModel(commentsModel);
+filmsModel.filmsList = filmList;
 
 const filterModel = new FilterModel();
 

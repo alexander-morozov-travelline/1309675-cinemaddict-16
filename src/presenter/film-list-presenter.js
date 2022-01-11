@@ -26,6 +26,7 @@ export default class FilmListPresenter {
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #filmPresenter = new Map();
   #filmPresenterWithPopup = null;
+  #filmIdWithOpenPopup = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
 
@@ -56,6 +57,7 @@ export default class FilmListPresenter {
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleCommentEvent);
 
     this.#renderMainContainer();
   }
@@ -69,6 +71,7 @@ export default class FilmListPresenter {
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleCommentEvent);
   }
 
   #handleModelEvent = (updateType, data) => {
@@ -87,6 +90,11 @@ export default class FilmListPresenter {
     }
   }
 
+  #handleCommentEvent = (updateType, data) => {
+    this.#filmsModel.reloadComments(data.idFilm);
+    this.#handleModelEvent(updateType, this.#filmsModel.getFilmById(data.idFilm));
+  }
+
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
@@ -99,7 +107,7 @@ export default class FilmListPresenter {
   }
 
   #renderSort = () => {
-    this.#sortComponent = new SortView();
+    this.#sortComponent = new SortView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
 
     render(this.#filmListComponent, this.#sortComponent, RenderPosition.BEFOREBEGIN);
@@ -107,15 +115,6 @@ export default class FilmListPresenter {
 
   #handleFilmChange = (updateType, updatedFilm) => {
     this.#filmsModel.updateFilm(updateType, updatedFilm);
-
-    this.#filmPresenter.get(FilmListNames.ALL_FILMS + updatedFilm.id)?.init(updatedFilm);
-    this.#filmPresenter.get(FilmListNames.TOP_RATED + updatedFilm.id)?.init(updatedFilm);
-    this.#filmPresenter.get(FilmListNames.MOST_COMMENTED + updatedFilm.id)?.init(updatedFilm);
-
-    if(this.#filmPresenterWithPopup) {
-      this.#filmPresenterWithPopup.openPopup();
-    }
-
   }
 
   #handleCommentChange = (actionType, updateType, update) => {
@@ -129,7 +128,8 @@ export default class FilmListPresenter {
     }
   }
 
-  #handleCardClick = (filmPresenter) => {
+  #handleCardClick = (filmPresenter, filmId) => {
+    this.#filmIdWithOpenPopup = filmId;
     if(this.#filmPresenterWithPopup) {
       this.#filmPresenterWithPopup.removePopup();
     }
@@ -139,6 +139,7 @@ export default class FilmListPresenter {
 
   #handleCardClose = () => {
     this.#filmPresenterWithPopup = null;
+    this.#filmIdWithOpenPopup = null;
   }
 
   #renderSectionFilms = () => {
@@ -150,7 +151,7 @@ export default class FilmListPresenter {
   #renderFilmCard = (containerId, film) => {
     const container = this.#filmListComponent.getFilmList(containerId);
     const filmPresenter = new FilmPresenter(container, this.#handleFilmChange, this.#commentsModel, this.#handleCommentChange);
-    filmPresenter.setCardClick(() =>this.#handleCardClick(filmPresenter));
+    filmPresenter.setCardClick(() =>this.#handleCardClick(filmPresenter, film.id));
     filmPresenter.setCardClose(this.#handleCardClose);
     filmPresenter.init(film);
 
@@ -220,6 +221,10 @@ export default class FilmListPresenter {
       remove(this.#filmsListEmptyComponent);
     }
 
+    if(this.#filmPresenterWithPopup) {
+      this.#filmPresenterWithPopup.destroy();
+    }
+
     this.#renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(filmsCount, this.#renderedFilmCount);
 
     if (resetSortType) {
@@ -233,6 +238,12 @@ export default class FilmListPresenter {
     if (filmsCount === 0) {
       this.#renderFilmsListEmpty();
       return;
+    }
+
+    if(this.#filmPresenterWithPopup && this.#filmIdWithOpenPopup) {
+      const filmOnPopup = this.#filmsModel.getFilmById(this.#filmIdWithOpenPopup);
+      this.#filmPresenterWithPopup.init(filmOnPopup);
+      this.#filmPresenterWithPopup.openPopup();
     }
 
     this.#renderSort();
