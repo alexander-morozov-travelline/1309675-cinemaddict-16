@@ -23,3 +23,29 @@ export const FilmAction = {
   MARK_WATCHED: 'watched',
   MARK_FAVORITE: 'favorite',
 };
+
+export const CommentAction = {
+  ADD: 'add',
+  DELETE: 'delete',
+};
+
+
+export const Emoji = {
+  SMILE: 'smile',
+  SLEEPING: 'sleeping',
+  PUKE: 'puke',
+  ANGRY: 'angry',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const FilterType = {
+  ALL: 'all',
+  WATCH_LIST: 'watchList',
+  WATCHED: 'watched',
+  FAVORITES: 'favorites',
+};
