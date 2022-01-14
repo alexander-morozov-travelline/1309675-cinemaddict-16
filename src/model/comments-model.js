@@ -14,10 +14,10 @@ export default class CommentsModel extends AbstractObservable {
 
   getCommentsByFilmId = (idFilm) => this.comments.filter((comment) => comment.idFilm === idFilm);
 
-  getCommentIdsByFilmId = (idFilm) => Array.from(this.getCommentsByFilmId(idFilm), (comment) => comment.id);
+  getCommentIdsByFilmId = (idFilm) => [...this.getCommentsByFilmId(idFilm)].map((comment) => comment.id);
 
   addComment = (updateType, comment) => {
-    const newComment = {id: nanoid(), name: 'Bill', ...comment};
+    const newComment = {id: nanoid(), author: 'Bill', ...comment};
     this.#comments = [
       newComment,
       ...this.#comments,
@@ -28,11 +28,12 @@ export default class CommentsModel extends AbstractObservable {
 
   deleteComment = (updateType, update) => {
     const index = this.#comments.findIndex((comment) => comment.id === update.id);
-    const deleteComment = {...this.#comments[index]};
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
+
+    const deleteComment = {...this.#comments[index]};
 
     this.#comments = [
       ...this.#comments.slice(0, index),

@@ -30,7 +30,13 @@ export default class FilmListPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
 
-  constructor(container, filmsModel, filterModel, commentsModel) {
+  constructor(props) {
+    const {
+      container,
+      filmsModel,
+      filterModel,
+      commentsModel,
+    } = props;
     this.#container = container;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;

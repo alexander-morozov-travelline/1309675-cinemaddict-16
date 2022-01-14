@@ -32,7 +32,13 @@ filmsModel.filmsList = filmList;
 const filterModel = new FilterModel();
 
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
-const movieListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
+
+const movieListPresenter = new FilmListPresenter({
+  container: siteMainElement,
+  filmsModel: filmsModel,
+  filterModel: filterModel,
+  commentsModel: commentsModel
+});
 
 filterPresenter.init();
 movieListPresenter.init();
