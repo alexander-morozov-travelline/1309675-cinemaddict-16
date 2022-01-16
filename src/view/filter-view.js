@@ -1,4 +1,5 @@
 import AbstractView from './abstract-view';
+import {MenuItem} from '../const';
 
 const createCountElement = (count = null) => count ? ` <span class="main-navigation__item-count">${count}</span>` : '';
 
@@ -52,5 +53,15 @@ export default class FilterView extends AbstractView {
 
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.dataset.filterType);
+  }
+
+  #menuStatisticClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.menuClick(MenuItem.STATISTICS);
+  }
+
+  setMenuClickHandler = (callback) => {
+    this._callback.menuClick = callback;
+    this.element.querySelector('.main-navigation__additional').addEventListener('click', this.#menuStatisticClickHandler);
   }
 }

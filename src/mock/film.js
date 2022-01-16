@@ -6,7 +6,6 @@ import {
   getRandomBoolean,
   getRandomInteger,
   getRandomFloat,
-  getTimeOutOfMinutes
 } from '../utils/common';
 import {nanoid} from 'nanoid';
 
@@ -78,7 +77,7 @@ const generateRuntime = () => {
   const MIN_TIME_IN_MINUTES = 30;
   const MAX_TIME_IN_MINUTES = 180;
   const totalMinutes = getRandomInteger(MIN_TIME_IN_MINUTES, MAX_TIME_IN_MINUTES);
-  return getTimeOutOfMinutes(totalMinutes);
+  return totalMinutes;
 };
 
 const generateCountry = () => {
@@ -159,9 +158,20 @@ const generateComments = () => {
   return Array.from({length: commentCount}, () => nanoid());
 };
 
+const generateWatchingDate = (isWatched = true) => {
+  if(isWatched) {
+    const MAX_WATCHING_DAYS_GAP = 20;
+    const daysGap = getRandomInteger(-MAX_WATCHING_DAYS_GAP, 0);
+
+    return dayjs().add(daysGap, 'day');
+  }
+  return null;
+};
+
 export const generateFilm = () => {
   const title = generateTitle();
   const year = generateYear();
+  const isWatched = getRandomBoolean();
   return {
     id: nanoid(),
     title: title,
@@ -179,8 +189,9 @@ export const generateFilm = () => {
     poster: generatePoster(),
     ageRating: generateAgeRating(),
     isFavorite: getRandomBoolean(),
-    isWatched:  getRandomBoolean(),
+    isWatched:  isWatched,
     isWatchList:  getRandomBoolean(),
+    watchingDate:  generateWatchingDate(isWatched),
     comments: generateComments(),
   };
 };

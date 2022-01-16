@@ -9,6 +9,7 @@ export default class FilterPresenter {
   #filmsModel = null;
 
   #filterComponent = null;
+  #menuClick = null;
 
   constructor(filterContainer, filterModel, filmsModel) {
     this.#filterContainer = filterContainer;
@@ -49,6 +50,7 @@ export default class FilterPresenter {
 
     this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
+    this.#filterComponent.setMenuClickHandler(this.#menuClick);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -82,5 +84,9 @@ export default class FilterPresenter {
     }
 
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  setMenuClickHandler = (callback) => {
+    this.#menuClick = callback;
   }
 }

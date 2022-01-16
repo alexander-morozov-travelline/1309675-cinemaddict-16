@@ -49,3 +49,16 @@ export const FilterType = {
   WATCHED: 'watched',
   FAVORITES: 'favorites',
 };
+
+export const MenuItem = {
+  FILMS: 'FILMS',
+  STATISTICS: 'STATISTICS',
+};
+
+export const StatisticsType = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};

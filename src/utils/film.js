@@ -9,3 +9,4 @@ export const sortCommentCountDown = (film1, film2) =>
 export const sortReleaseDateDown = (film1, film2) =>
   dayjs(film2.releaseDate).diff(dayjs(film1.releaseDate));
 
+export const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
