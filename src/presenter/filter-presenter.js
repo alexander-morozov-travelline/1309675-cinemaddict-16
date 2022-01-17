@@ -1,7 +1,7 @@
 import FilterView from '../view/filter-view.js';
 import {render, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
-import {FilterType, UpdateType} from '../const.js';
+import {FilterType, MenuItem, UpdateType} from '../const.js';
 
 export default class FilterPresenter {
   #filterContainer = null;
@@ -9,7 +9,7 @@ export default class FilterPresenter {
   #filmsModel = null;
 
   #filterComponent = null;
-  #menuClick = null;
+  #changeMenuType = null;
 
   constructor(filterContainer, filterModel, filmsModel) {
     this.#filterContainer = filterContainer;
@@ -47,10 +47,11 @@ export default class FilterPresenter {
   init = () => {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
+    const currentFilter = this.#filterModel.menuType === MenuItem.FILMS ? this.#filterModel.filter : null;
 
-    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
+    this.#filterComponent = new FilterView(filters, currentFilter, this.#filterModel.menuType);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
-    this.#filterComponent.setMenuClickHandler(this.#menuClick);
+    this.#filterComponent.setMenuClickHandler(this.#handleChangeMenu);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -62,6 +63,7 @@ export default class FilterPresenter {
 
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
+
   }
 
   destroy = () => {
@@ -79,6 +81,9 @@ export default class FilterPresenter {
   }
 
   #handleFilterTypeChange = (filterType) => {
+    if(this.#filterModel.menuType === MenuItem.STATISTICS) {
+      this.#handleChangeMenu(MenuItem.FILMS);
+    }
     if (this.#filterModel.filter === filterType) {
       return;
     }
@@ -87,6 +92,18 @@ export default class FilterPresenter {
   }
 
   setMenuClickHandler = (callback) => {
-    this.#menuClick = callback;
+    this.#changeMenuType = callback;
+  }
+
+  #handleChangeMenu = (menuType) => {
+    if (this.#filterModel.menuType === menuType) {
+      return;
+    }
+
+    this.#filterModel.filter = FilterType.ALL;
+    this.#filterModel.setMenuType(menuType);
+    this.#changeMenuType(this.#filterModel.menuType);
+
+    this.init();
   }
 }

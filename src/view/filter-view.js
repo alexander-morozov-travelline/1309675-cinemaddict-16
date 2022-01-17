@@ -15,7 +15,7 @@ const createFilterItemTemplate = (filter, currentFilter) => {
   );
 };
 
-const createFilterTemplate = (filterItems, currentFilter) => {
+const createFilterTemplate = (filterItems, currentFilter, menuType) => {
   const filterItemsTemplate = filterItems
     .map((filter) => createFilterItemTemplate(filter, currentFilter))
     .join('');
@@ -23,34 +23,36 @@ const createFilterTemplate = (filterItems, currentFilter) => {
     <div class="main-navigation__items">
       ${filterItemsTemplate}
     </div>
-    <a href="#stats" class="main-navigation__additional">Stats</a>
+    <a href="#stats" class="main-navigation__additional${menuType === MenuItem.STATISTICS ?' main-navigation__additional--active' : ''}">Stats</a>
   </nav>`;
 };
 
 export default class FilterView extends AbstractView {
   #filters = null;
   #currentFilter = null;
+  #menuType = null;
 
-  constructor(filters, currentFilterType) {
+  constructor(filters, currentFilterType, menuType) {
     super();
     this.#filters = filters;
     this.#currentFilter = currentFilterType;
+    this.#menuType = menuType;
   }
 
   get template() {
-    return createFilterTemplate(this.#filters, this.#currentFilter);
+    return createFilterTemplate(this.#filters, this.#currentFilter, this.#menuType);
   }
 
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
-    this.element.addEventListener('click', this.#filterTypeChangeHandler);
+    this.element.querySelectorAll('.main-navigation__item').forEach((item) => {
+      item.addEventListener('click', (evt) => {
+        this.#filterTypeChangeHandler(evt);
+      });
+    });
   }
 
   #filterTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
-      return;
-    }
-
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.dataset.filterType);
   }
