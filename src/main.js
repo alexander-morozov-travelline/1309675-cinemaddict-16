@@ -10,7 +10,11 @@ import FilterPresenter from './presenter/filter-presenter';
 import FilmsModel from './model/films-model';
 import FilterModel from './model/filter-model';
 import CommentsModel from './model/comments-model';
-import { MenuItem} from './const';
+import { MenuItem } from './const';
+import ApiService from './api-service.js';
+
+const AUTHORIZATION = 'Basic asdfGsdf73avvvttt';
+const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
 
 const FILM_COUNT = 15;
 
@@ -20,8 +24,8 @@ const comments = generateComments(filmList);
 const commentsModel = new CommentsModel();
 commentsModel.comments = comments;
 
-const filmsModel = new FilmsModel(commentsModel);
-filmsModel.filmsList = filmList;
+const filmsModel = new FilmsModel(new ApiService(END_POINT, AUTHORIZATION), commentsModel);
+//filmsModel.filmsList = filmList;
 
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
@@ -62,3 +66,5 @@ filterPresenter.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 filmListPresenter.init();
+
+filmsModel.init();

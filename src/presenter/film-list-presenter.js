@@ -7,6 +7,7 @@ import SortView from '../view/sort-view';
 import {sortCommentCountDown, sortRatingDown, sortReleaseDateDown} from '../utils/film';
 import {filter} from '../utils/filter';
 import FilmsListEmptyView from '../view/films-list-empty-view';
+import LoadingView from '../view/loading-view';
 
 const FILM_COUNT_PER_STEP = 5;
 const FILM_TOP_RATED_COUNT = 2;
@@ -22,6 +23,7 @@ export default class FilmListPresenter {
   #filmsListEmptyComponent = null;
   #sortComponent = null;
   #showMoreComponent = new ShowButtonView();
+  #loadingComponent = new LoadingView();
 
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #filmPresenter = new Map();
@@ -29,6 +31,7 @@ export default class FilmListPresenter {
   #filmIdWithOpenPopup = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
   constructor(props) {
     const {
@@ -91,6 +94,11 @@ export default class FilmListPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearMainContainer({resetRenderedFilmCount: true, resetSortType: true});
+        this.#renderMainContainer();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderMainContainer();
         break;
     }
@@ -215,6 +223,10 @@ export default class FilmListPresenter {
     render(this.#filmListComponent, this.#filmsListEmptyComponent, RenderPosition.BEFOREBEGIN);
   }
 
+  #renderLoading = () => {
+    render(this.#filmListComponent, this.#loadingComponent, RenderPosition.BEFOREBEGIN);
+  }
+
   #clearMainContainer = ({resetRenderedFilmCount = false, resetSortType = false} = {}) => {
     const filmsCount = this.filmsList.length;
 
@@ -240,6 +252,11 @@ export default class FilmListPresenter {
   }
 
   #renderMainContainer = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const filmsCount = this.filmsList.length;
 
     if (filmsCount === 0) {
