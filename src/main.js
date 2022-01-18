@@ -52,7 +52,7 @@ const handleSiteMenuClick = (menuItem) => {
       break;
     case MenuItem.STATISTICS:
       filmListPresenter.destroy();
-      statisticsComponent = new StatisticsView(filmsModel.filmsList);
+      statisticsComponent = new StatisticsView(filmsModel.watchedFilmsList);
       render(siteMainElement, statisticsComponent);
       break;
   }
