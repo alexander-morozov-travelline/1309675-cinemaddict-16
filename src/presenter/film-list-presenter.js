@@ -18,7 +18,7 @@ export default class FilmListPresenter {
   #filterModel = null;
   #commentsModel = null;
 
-  #filmListComponent = new FilmsListView();
+  #filmListComponent = null;
   #filmsListEmptyComponent = null;
   #sortComponent = null;
   #showMoreComponent = new ShowButtonView();
@@ -30,7 +30,13 @@ export default class FilmListPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
 
-  constructor(container, filmsModel, filterModel, commentsModel) {
+  constructor(props) {
+    const {
+      container,
+      filmsModel,
+      filterModel,
+      commentsModel,
+    } = props;
     this.#container = container;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
@@ -53,13 +59,14 @@ export default class FilmListPresenter {
   }
 
   init = () => {
+    this.#filmListComponent = new FilmsListView();
     render(this.#container, this.#filmListComponent);
 
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleCommentEvent);
 
-    this.#renderMainContainer();
+    this.#renderMainContainer({resetRenderedFilmCount: true, resetSortType: true});
   }
 
   destroy = () => {
@@ -70,7 +77,6 @@ export default class FilmListPresenter {
     remove(this.#showMoreComponent);
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
-    this.#filterModel.removeObserver(this.#handleModelEvent);
     this.#commentsModel.removeObserver(this.#handleCommentEvent);
   }
 
@@ -151,6 +157,7 @@ export default class FilmListPresenter {
   #renderFilmCard = (containerId, film) => {
     const container = this.#filmListComponent.getFilmList(containerId);
     const filmPresenter = new FilmPresenter(container, this.#handleFilmChange, this.#commentsModel, this.#handleCommentChange);
+
     filmPresenter.setCardClick(() =>this.#handleCardClick(filmPresenter, film.id));
     filmPresenter.setCardClose(this.#handleCardClose);
     filmPresenter.init(film);

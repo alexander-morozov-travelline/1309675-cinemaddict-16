@@ -1,7 +1,8 @@
-import {render} from './utils/render.js';
+import {render, remove} from './utils/render.js';
 
 import ProfileView from './view/profile-view';
-import StatisticView from './view/statistic-view';
+import FooterStatisticView from './view/footer-statistic-view';
+import StatisticsView from './view/statistics-view';
 import { generateFilm } from './mock/film';
 import { generateComments } from './mock/comments';
 import FilmListPresenter from './presenter/film-list-presenter';
@@ -9,19 +10,12 @@ import FilterPresenter from './presenter/filter-presenter';
 import FilmsModel from './model/films-model';
 import FilterModel from './model/filter-model';
 import CommentsModel from './model/comments-model';
+import { MenuItem} from './const';
 
 const FILM_COUNT = 15;
 
 const filmList = Array.from({length: FILM_COUNT}, generateFilm);
 const comments = generateComments(filmList);
-
-const siteMainElement = document.querySelector('.main');
-const siteHeaderElement = document.querySelector('.header');
-const siteFooterElement = document.querySelector('.footer');
-const siteStatisticsElement = siteFooterElement.querySelector('.footer__statistics');
-
-render(siteHeaderElement, new ProfileView());
-render(siteStatisticsElement, new StatisticView());
 
 const commentsModel = new CommentsModel();
 commentsModel.comments = comments;
@@ -29,10 +23,42 @@ commentsModel.comments = comments;
 const filmsModel = new FilmsModel(commentsModel);
 filmsModel.filmsList = filmList;
 
+const siteMainElement = document.querySelector('.main');
+const siteHeaderElement = document.querySelector('.header');
+const siteFooterElement = document.querySelector('.footer');
+const siteFooterStatisticsElement = siteFooterElement.querySelector('.footer__statistics');
+
+render(siteHeaderElement, new ProfileView());
+render(siteFooterStatisticsElement, new FooterStatisticView(filmsModel.filmsList.length));
+
 const filterModel = new FilterModel();
 
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
-const movieListPresenter = new FilmListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
+
+const filmListPresenter = new FilmListPresenter({
+  container: siteMainElement,
+  filmsModel: filmsModel,
+  filterModel: filterModel,
+  commentsModel: commentsModel
+});
+
+let statisticsComponent = null;
+
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.FILMS:
+      remove(statisticsComponent);
+      filmListPresenter.init();
+      break;
+    case MenuItem.STATISTICS:
+      filmListPresenter.destroy();
+      statisticsComponent = new StatisticsView(filmsModel.watchedFilmsList);
+      render(siteMainElement, statisticsComponent);
+      break;
+  }
+};
+
+filterPresenter.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
-movieListPresenter.init();
+filmListPresenter.init();

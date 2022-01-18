@@ -1,5 +1,5 @@
 import he from 'he';
-import {getFormattedDate} from '../utils/common';
+import {getFormattedDate, getTimeOutOfMinutes} from '../utils/common';
 import {CommentAction, Emoji, FilmAction} from '../const.js';
 import SmartView from './smart-view';
 
@@ -100,7 +100,7 @@ const createFilmDetailsPopupTemplate = (film, comments) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${runtime}</td>
+                <td class="film-details__cell">${getTimeOutOfMinutes(runtime)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
