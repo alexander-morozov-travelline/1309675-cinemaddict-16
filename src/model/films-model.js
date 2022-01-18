@@ -5,7 +5,7 @@ import {getRandomBoolean} from '../utils/common';
 export default class FilmsModel extends AbstractObservable{
   #filmsList = [];
   #commentsModel = null;
-  #apiService
+  #apiService;
 
   constructor(apiService, commentsModel) {
     super();
@@ -74,7 +74,6 @@ export default class FilmsModel extends AbstractObservable{
   }
 
   #adaptToClient = (film) => {
-    console.log(film);
 
     const adaptedFilm = {...film,
       releaseDate: film.film_info?.release?.date ? new Date(film.film_info.release.date) : null,
@@ -101,7 +100,6 @@ export default class FilmsModel extends AbstractObservable{
       isFavorite: film['is_favorite'],
       repeating: film['repeating_days'],*/
     };
-    console.log(adaptedFilm);
 
     delete adaptedFilm['film_info'];
 
