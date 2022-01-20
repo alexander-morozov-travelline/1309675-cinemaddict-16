@@ -1,8 +1,15 @@
 import AbstractObservable from '../utils/abstract-observable.js';
 import {nanoid} from 'nanoid';
+import {UpdateType} from '../const';
 
 export default class CommentsModel extends AbstractObservable {
-  #comments = [];
+  #comments = new Map();
+  #apiService;
+
+  constructor(apiService) {
+    super();
+    this.#apiService = apiService;
+  }
 
   set comments(comments) {
     this.#comments = [...comments];
@@ -12,7 +19,19 @@ export default class CommentsModel extends AbstractObservable {
     return this.#comments;
   }
 
-  getCommentsByFilmId = (idFilm) => this.comments.filter((comment) => comment.idFilm === idFilm);
+  loadComments = async (idFilm) => {
+    let comments;
+    try {
+      comments = await this.#apiService.getComments(idFilm);
+      this.#comments.set(idFilm, comments.map(this.#adaptToClient));
+    } catch(err) {
+      comments = [];
+    }
+    this._notify(UpdateType.LOADED_COMMENT, {idFilm: idFilm});
+    return comments.map(this.#adaptToClient);
+  }
+
+  getCommentsByFilmId = (idFilm) => this.#comments.get(idFilm);
 
   getCommentIdsByFilmId = (idFilm) => [...this.getCommentsByFilmId(idFilm)].map((comment) => comment.id);
 
@@ -40,5 +59,19 @@ export default class CommentsModel extends AbstractObservable {
       ...this.#comments.slice(index + 1),
     ];
     this._notify(updateType, deleteComment);
+  }
+
+  #adaptToClient = (comment) => {
+    const adaptedComment = {...comment,
+      emoji: `./images/emoji/${comment.emotion}.png`,
+      text: comment.comment,
+      day: comment.date,
+    };
+
+    delete adaptedComment['emotion'];
+    delete adaptedComment['comment'];
+    delete adaptedComment['date'];
+
+    return adaptedComment;
   }
 }

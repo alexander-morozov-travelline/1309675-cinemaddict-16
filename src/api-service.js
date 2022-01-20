@@ -32,6 +32,8 @@ export default class ApiService {
     return parsedResponse;
   }
 
+  getComments = (idFilm) => this.#load({url: `comments/${idFilm}`}).then(ApiService.parseResponse);
+
   addComment = async (comment) => {
     const response = await this.#load({
       url: 'comments',

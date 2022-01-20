@@ -31,7 +31,9 @@ const createItemComment = (comment) => {
     </li>`;
 };
 
-const createCommentTemplate = (commentList) => commentList.map((comment) => createItemComment(comment)).join('');
+const createCommentTemplate = (commentList) => commentList.length
+  ? commentList.map((comment) => createItemComment(comment)).join('')
+  : '';
 
 const createCommentEmojiTemplate = (emoji) => emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : '';
 

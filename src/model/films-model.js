@@ -1,6 +1,6 @@
 import AbstractObservable from '../utils/abstract-observable';
 import {UpdateType} from '../const';
-import {getRandomBoolean} from '../utils/common';
+import dayjs from 'dayjs';
 
 export default class FilmsModel extends AbstractObservable{
   #filmsList = [];
@@ -74,34 +74,29 @@ export default class FilmsModel extends AbstractObservable{
   }
 
   #adaptToClient = (film) => {
-
     const adaptedFilm = {...film,
-      releaseDate: film.film_info?.release?.date ? new Date(film.film_info.release.date) : null,
       title: film.film_info.title,
-/*      titleOriginal: title,
-      director: generateDirector(),
-      writers: generateWriters(),
-      actors: generateActors(),
-      runtime: generateRuntime(),
-      country: generateCountry(),
-      genres: generateGenres(),
-      description: generateDescription(),
-      rating: generateRating(),
-      year: year,
-      releaseDate: generateReleaseDate(year),
-      poster: generatePoster(),
-      ageRating: generateAgeRating(),
-      isFavorite: getRandomBoolean(),
-      isWatched:  isWatched,
-      isWatchList:  getRandomBoolean(),
-      watchingDate:  generateWatchingDate(isWatched),
-      comments: generateComments(),
-      isArchive: film['is_archived'],
-      isFavorite: film['is_favorite'],
-      repeating: film['repeating_days'],*/
+      titleOriginal: film.film_info?.alternative_title,
+      director: film.film_info?.director,
+      writers: film.film_info?.writers,
+      actors: film.film_info?.actors,
+      runtime: film.film_info?.runtime,
+      country: film.film_info?.release_country,
+      genres: film.film_info?.genre,
+      description: film.film_info?.description,
+      rating: film.film_info?.total_rating,
+      year: dayjs(film.film_info?.release.date).year(),
+      releaseDate: film.film_info?.release?.date ? new Date(film.film_info.release.date) : null,
+      poster: film.film_info?.poster,
+      ageRating: film.film_info?.age_rating,
+      isWatched: film.user_details?.already_watched,
+      isWatchList: film.user_details?.watchlist,
+      watchingDate: film?.user_details?.watching_date ? new Date(film.user_details.watching_date) : null,
+      isFavorite: film.user_details?.favorite,
     };
 
     delete adaptedFilm['film_info'];
+    delete adaptedFilm['user_details'];
 
     return adaptedFilm;
   }

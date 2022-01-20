@@ -42,6 +42,7 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  LOADED_COMMENT: 'LOADED_COMMENT',
 };
 
 export const FilterType = {
@@ -62,4 +63,9 @@ export const StatisticsType = {
   WEEK: 'week',
   MONTH: 'month',
   YEAR: 'year',
+};
+
+export const ExtraTitle = {
+  TOP_RATED: 'Top rated',
+  MOST_COMMENTED: 'Most commented',
 };

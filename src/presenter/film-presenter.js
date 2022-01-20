@@ -13,6 +13,7 @@ export class FilmPresenter {
   #filmDetailsPopupComponent = null;
   #siteFooterElement = document.querySelector('.footer');
   #commentsModel;
+  #isCommentLoaded = false;
 
   _callback = {};
 
@@ -41,9 +42,19 @@ export class FilmPresenter {
     remove(prevFilmComponent);
   }
 
+  handleLoadedComment() {
+    this.#isCommentLoaded = true;
+  }
+
   openPopup = () => {
     const prevFilmDetailsPopupComponent = this.#filmDetailsPopupComponent;
-    const filmComments = this.#commentsModel.getCommentsByFilmId(this.#film.id);
+    let filmComments = [];
+    if(!this.#isCommentLoaded) {
+      this.#commentsModel.loadComments(this.#film.id);
+    } else {
+      filmComments = this.#commentsModel.getCommentsByFilmId(this.#film.id);
+    }
+
     this.#filmDetailsPopupComponent = new FilmDetailsPopupView(this.#film, filmComments);
 
     this.#filmDetailsPopupComponent.setCloseClickHandler(this.#handleClosePopup);
