@@ -46,20 +46,25 @@ export default class FilmsModel extends AbstractObservable{
     return this.filmsList[index];
   }
 
-  updateFilm = (updateType, update) => {
+  updateFilm = async (updateType, update) => {
     const index = this.#filmsList.findIndex((film) => film.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting film');
     }
 
-    this.#filmsList = [
-      ...this.#filmsList.slice(0, index),
-      update,
-      ...this.#filmsList.slice(index + 1),
-    ];
-
-    this._notify(updateType, update);
+    try {
+      const response = await this.#apiService.updateFilm(update);
+      const updatedFilm = this.#adaptToClient(response);
+      this.#filmsList = [
+        ...this.#filmsList.slice(0, index),
+        updatedFilm,
+        ...this.#filmsList.slice(index + 1),
+      ];
+      this._notify(updateType, updatedFilm);
+    } catch (err) {
+      throw new Error('Can\'t update task');
+    }
   }
 
   reloadComments = (filmId) => {
@@ -81,7 +86,7 @@ export default class FilmsModel extends AbstractObservable{
       writers: film.film_info?.writers,
       actors: film.film_info?.actors,
       runtime: film.film_info?.runtime,
-      country: film.film_info?.release_country,
+      country: film.film_info?.release?.release_country,
       genres: film.film_info?.genre,
       description: film.film_info?.description,
       rating: film.film_info?.total_rating,
@@ -91,7 +96,7 @@ export default class FilmsModel extends AbstractObservable{
       ageRating: film.film_info?.age_rating,
       isWatched: film.user_details?.already_watched,
       isWatchList: film.user_details?.watchlist,
-      watchingDate: film?.user_details?.watching_date ? new Date(film.user_details.watching_date) : null,
+      watchingDate: film.user_details?.watching_date ? new Date(film.user_details.watching_date) : null,
       isFavorite: film.user_details?.favorite,
     };
 

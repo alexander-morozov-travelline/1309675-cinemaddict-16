@@ -77,7 +77,37 @@ export default class ApiService {
   }
 
   #adaptToServer = (film) => {
-    const adaptedFilm = {...film};
+    const filmInfo = {
+      'title': film.title,
+      'age_rating': film.ageRating,
+      'alternative_title': film.titleOriginal,
+      'director': film.director,
+      'writers': film.writers,
+      'actors': film.actors,
+      'runtime': film.runtime,
+      'release': {
+        'date': film.releaseDate instanceof Date ? film.releaseDate.toISOString() : null,
+        'release_country': film.country
+      },
+      'genre': film.genres,
+      'description': film.description,
+      'total_rating': film.rating,
+      'poster': film.poster,
+    };
+    const userDetails = {
+      'already_watched': film.isWatched,
+      'watchlist': film.isWatchList,
+      'watching_date': film.watchingDate instanceof Date ? film.watchingDate.toISOString() : null,
+      'favorite': film.isFavorite,
+    };
+
+    const adaptedFilm = {
+      'id': film.id,
+      'comments': film.comments,
+      'film_info': filmInfo,
+      'user_details': userDetails,
+    };
+
     return adaptedFilm;
   }
 
