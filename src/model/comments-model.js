@@ -1,5 +1,4 @@
 import AbstractObservable from '../utils/abstract-observable.js';
-import {nanoid} from 'nanoid';
 import {UpdateType} from '../const';
 
 export default class CommentsModel extends AbstractObservable {
@@ -9,14 +8,6 @@ export default class CommentsModel extends AbstractObservable {
   constructor(apiService) {
     super();
     this.#apiService = apiService;
-  }
-
-  set comments(comments) {
-    this.#comments = [...comments];
-  }
-
-  get comments() {
-    return this.#comments;
   }
 
   loadComments = async (idFilm) => {
@@ -35,30 +26,47 @@ export default class CommentsModel extends AbstractObservable {
 
   getCommentIdsByFilmId = (idFilm) => [...this.getCommentsByFilmId(idFilm)].map((comment) => comment.id);
 
-  addComment = (updateType, comment) => {
-    const newComment = {id: nanoid(), author: 'Bill', ...comment};
-    this.#comments = [
-      newComment,
-      ...this.#comments,
-    ];
-
-    this._notify(updateType, newComment);
+  addComment = async (updateType, update) => {
+    const {comment, idFilm} = update;
+    try {
+      const response = await this.#apiService.addComment(comment);
+      const newComment = this.#adaptToClient(response);
+      const comments = this.getCommentsByFilmId(idFilm);
+      const newComments = [
+        this.#adaptToClient(newComment),
+        ...comments,
+      ];
+      this.#comments.set(idFilm, newComments);
+      this._notify(updateType, newComment);
+    } catch (err) {
+      throw new Error('Can\'t add comment');
+    }
   }
 
-  deleteComment = (updateType, update) => {
-    const index = this.#comments.findIndex((comment) => comment.id === update.id);
+  deleteComment = async (updateType, update) => {
+    const {comment, idFilm} = update;
+    const comments = this.getCommentsByFilmId(idFilm);
+
+    if (!comments) {
+      throw new Error('Can\'t delete comments for film');
+    }
+
+    const index = comments.findIndex((item) => item.id === comment.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
 
-    const deleteComment = {...this.#comments[index]};
-
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1),
-    ];
-    this._notify(updateType, deleteComment);
+    try {
+      await this.#apiService.deleteComment(comment);
+      const newComments = [
+        ...comments.slice(0, index),
+        ...comments.slice(index + 1),
+      ];
+      this.#comments.set(idFilm, newComments);
+    } catch (err) {
+      throw new Error('Can\'t delete comment');
+    }
   }
 
   #adaptToClient = (comment) => {

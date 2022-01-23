@@ -2,7 +2,7 @@ import {CommentAction, ExtraTitle, FilmListNames, FilterType, SortType, UpdateTy
 import {render, RenderPosition, remove} from '../utils/render';
 import ShowButtonView from '../view/show-button-view';
 import FilmsListView from '../view/films-list-view';
-import {FilmPresenter} from './film-presenter';
+import {FilmPresenter, State as FilmPresenterViewState} from './film-presenter';
 import SortView from '../view/sort-view';
 import {sortCommentCountDown, sortRatingDown, sortReleaseDateDown} from '../utils/film';
 import {filter} from '../utils/filter';
@@ -137,13 +137,23 @@ export default class FilmListPresenter {
     this.#filmsModel.updateFilm(updateType, updatedFilm);
   }
 
-  #handleCommentChange = (actionType, updateType, update) => {
+  #handleCommentChange = async (actionType, updateType, update) => {
     switch (actionType) {
       case CommentAction.DELETE:
-        this.#commentsModel.deleteComment(updateType, update);
+        this.#filmPresenterWithPopup.setViewState(FilmPresenterViewState.DELETING, update.id);
+        try {
+          await this.#commentsModel.deleteComment(updateType, update);
+        } catch (err) {
+          this.#filmPresenterWithPopup.setAborting();
+        }
         break;
       case CommentAction.ADD:
-        this.#commentsModel.addComment(updateType, update);
+        this.#filmPresenterWithPopup.setSaving();
+        try {
+          await this.#commentsModel.addComment(updateType, update);
+        } catch (err) {
+          this.#filmPresenterWithPopup.setAborting();
+        }
         break;
     }
   }
@@ -195,7 +205,12 @@ export default class FilmListPresenter {
   }
 
   #renderFilmCard = (container, type, film) => {
-    const filmPresenter = new FilmPresenter(container, this.#handleFilmChange, this.#commentsModel, this.#handleCommentChange);
+    const filmPresenter = new FilmPresenter({
+      container: container,
+      changeData: this.#handleFilmChange,
+      commentsModel: this.#commentsModel,
+      changeComment: this.#handleCommentChange,
+    });
 
     filmPresenter.setCardClick(() =>this.#handleCardClick(filmPresenter, film.id));
     filmPresenter.setCardClose(this.#handleCardClose);

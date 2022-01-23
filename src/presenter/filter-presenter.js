@@ -1,5 +1,5 @@
 import FilterView from '../view/filter-view.js';
-import {render, replace, remove} from '../utils/render.js';
+import {render, replace, remove, RenderPosition} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
 import {FilterType, MenuItem, UpdateType} from '../const.js';
 
@@ -57,7 +57,7 @@ export default class FilterPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
 
     if (prevFilterComponent === null) {
-      render(this.#filterContainer, this.#filterComponent);
+      render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFOREBEGIN);
       return;
     }
 

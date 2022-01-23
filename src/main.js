@@ -60,9 +60,9 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-filterPresenter.setMenuClickHandler(handleSiteMenuClick);
-
-filterPresenter.init();
 filmListPresenter.init();
 
-filmsModel.init();
+filmsModel.init().finally(() => {
+  filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+  filterPresenter.init();
+});
