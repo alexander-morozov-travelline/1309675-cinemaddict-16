@@ -16,14 +16,9 @@ const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
 
 const apiService = new ApiService(END_POINT, AUTHORIZATION);
 
-// const filmList = Array.from({length: FILM_COUNT}, generateFilm);
-// const comments = generateComments(filmList);
-
 const commentsModel = new CommentsModel(apiService);
-// commentsModel.comments = comments;
-
 const filmsModel = new FilmsModel(apiService, commentsModel);
-// filmsModel.filmsList = filmList;
+
 
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
