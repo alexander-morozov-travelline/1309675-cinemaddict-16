@@ -111,7 +111,7 @@ export class FilmPresenter {
 
   #ctrEnterDownHandler = (evt) => {
     if(isCtrlEnterEvent(evt)) {
-      evt.preventDefault(evt);
+      evt.preventDefault();
       this.#filmDetailsPopupComponent.addCommentHandler();
     }
   }

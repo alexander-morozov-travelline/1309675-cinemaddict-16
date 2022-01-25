@@ -245,11 +245,9 @@ export default class FilmDetailsPopupView extends SmartView {
 
   addCommentHandler = () => {
     const newComment = {
-      idFilm: this._data.id,
-      emoji: this._data.commentEmoji ? `./images/emoji/${this._data.commentEmoji}.png` : null,
-      text: this._data.comment
+      emotion: this._data.commentEmoji,
+      comment: this._data.comment
     };
-
     this._callback.commentAction(CommentAction.ADD, newComment, this._data.id);
   }
 
@@ -261,18 +259,6 @@ export default class FilmDetailsPopupView extends SmartView {
     isDeleting: false,
     deletingCommentId: null,
   });
-
-  static parseDataToFilm = (data) => {
-    const film = {...data};
-    delete film.comment;
-    delete film.commentEmoji;
-    delete film.isDisabled;
-    delete film.isSaving;
-    delete film.isDeleting;
-    delete film.deletingCommentId;
-
-    return film;
-  };
 
   reset = (film) => {
     this.updateData(

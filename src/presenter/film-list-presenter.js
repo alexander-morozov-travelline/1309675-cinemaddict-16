@@ -112,6 +112,10 @@ export default class FilmListPresenter {
       case UpdateType.LOADED_COMMENT:
         this.#handleModelEvent(UpdateType.LOADED_COMMENT, this.#filmsModel.getFilmById(data.idFilm));
         break;
+      case UpdateType.MINOR:
+        this.#filmsModel.reloadComments(data.idFilm);
+        this.#handleModelEvent(updateType);
+        break;
     }
   }
 
@@ -174,7 +178,6 @@ export default class FilmListPresenter {
 
   #renderSectionFilms = () => {
     this.#renderMainFilmList(this.filmsList);
-
 
     const topRatedFilms = this.topRatedFilms;
     if(topRatedFilms.length){

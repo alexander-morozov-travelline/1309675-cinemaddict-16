@@ -32,11 +32,11 @@ export default class ApiService {
 
   getComments = (idFilm) => this.#load({url: `comments/${idFilm}`}).then(ApiService.parseResponse);
 
-  addComment = async (comment) => {
+  addComment = async (comment, idFilm) => {
     const response = await this.#load({
-      url: 'comments',
+      url: `comments/${idFilm}`,
       method: Method.POST,
-      body: JSON.stringify(this.#adaptToServer(comment)),
+      body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
