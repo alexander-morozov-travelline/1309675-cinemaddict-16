@@ -36,7 +36,7 @@ const filmListPresenter = new FilmListPresenter({
   container: siteMainElement,
   filmsModel: filmsModel,
   filterModel: filterModel,
-  commentsModel: commentsModel
+  commentsModel: commentsModel,
 });
 
 let statisticsComponent = null;
