@@ -3,25 +3,22 @@ import {render, remove} from './utils/render.js';
 import ProfileView from './view/profile-view';
 import FooterStatisticView from './view/footer-statistic-view';
 import StatisticsView from './view/statistics-view';
-import { generateFilm } from './mock/film';
-import { generateComments } from './mock/comments';
 import FilmListPresenter from './presenter/film-list-presenter';
 import FilterPresenter from './presenter/filter-presenter';
 import FilmsModel from './model/films-model';
 import FilterModel from './model/filter-model';
 import CommentsModel from './model/comments-model';
-import { MenuItem} from './const';
+import { MenuItem } from './const';
+import ApiService from './api-service.js';
 
-const FILM_COUNT = 15;
+const AUTHORIZATION = 'Basic asdfGsdf73avvvttt';
+const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
 
-const filmList = Array.from({length: FILM_COUNT}, generateFilm);
-const comments = generateComments(filmList);
+const apiService = new ApiService(END_POINT, AUTHORIZATION);
 
-const commentsModel = new CommentsModel();
-commentsModel.comments = comments;
+const commentsModel = new CommentsModel(apiService);
+const filmsModel = new FilmsModel(apiService, commentsModel);
 
-const filmsModel = new FilmsModel(commentsModel);
-filmsModel.filmsList = filmList;
 
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
@@ -58,7 +55,9 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-filterPresenter.setMenuClickHandler(handleSiteMenuClick);
-
-filterPresenter.init();
 filmListPresenter.init();
+
+filmsModel.init().finally(() => {
+  filterPresenter.setMenuClickHandler(handleSiteMenuClick);
+  filterPresenter.init();
+});
