@@ -1,5 +1,5 @@
 import he from 'he';
-import {getFormattedDate, getTimeOutOfMinutes} from '../utils/common';
+import {getHumanFormattedDate, getTimeOutOfMinutes} from '../utils/common';
 import {CommentAction, Emoji, FilmAction} from '../const.js';
 import SmartView from './smart-view';
 
@@ -24,7 +24,7 @@ const createItemComment = (comment, isDeleting, isDisabled, deletingCommentId) =
         <p class="film-details__comment-text">${text}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${getFormattedDate(day, 'YYYY/MM/DD HH:mm')}</span>
+          <span class="film-details__comment-day">${getHumanFormattedDate(day)}</span>
           <button class="film-details__comment-delete" data-comment-id="${id}" ${isDisabled ? 'disabled' : ''}>${isDeleting && id === deletingCommentId ? 'Deleting...' : 'Delete'}</button>
         </p>
       </div>
@@ -251,15 +251,6 @@ export default class FilmDetailsPopupView extends SmartView {
     this._callback.commentAction(CommentAction.ADD, newComment, this._data.id);
   }
 
-  static parseFilmToData = (film) => ({...film,
-    comment: '',
-    commentEmoji: null,
-    isDisabled: false,
-    isSaving: false,
-    isDeleting: false,
-    deletingCommentId: null,
-  });
-
   reset = (film) => {
     this.updateData(
       FilmDetailsPopupView.parseFilmToData(film),
@@ -268,13 +259,13 @@ export default class FilmDetailsPopupView extends SmartView {
 
   #setInnerHandlers = () => {
     this.element.querySelectorAll('input[name="comment-emoji"]').forEach((input) => {
-      input.addEventListener('click', this.#changeCommentEmoji);
+      input.addEventListener('click', this.#onChangeCommentEmoji);
     });
 
     this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
   }
 
-  #changeCommentEmoji = (evt) => {
+  #onChangeCommentEmoji = (evt) => {
     evt.preventDefault();
     this.updateData({
       commentEmoji: evt.target.value,
@@ -295,4 +286,12 @@ export default class FilmDetailsPopupView extends SmartView {
     this.setCommentActionHandler(this._callback.commentAction);
   }
 
+  static parseFilmToData = (film) => ({...film,
+    comment: '',
+    commentEmoji: null,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+    deletingCommentId: null,
+  });
 }

@@ -186,11 +186,11 @@ export default class StatisticsView extends SmartView {
 
   #setTimeChange = () => {
     this.element.querySelectorAll('.statistic__filters-input').forEach((input) => {
-      input.addEventListener('click', this.#actionChangeTime);
+      input.addEventListener('click', this.#timeChangeHandler);
     });
   }
 
-  #actionChangeTime = (evt) => {
+  #timeChangeHandler = (evt) => {
     evt.preventDefault();
     const statisticsType = evt.target.value;
 

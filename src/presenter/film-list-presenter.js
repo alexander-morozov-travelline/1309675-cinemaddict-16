@@ -2,7 +2,7 @@ import {CommentAction, ExtraTitle, FilmListNames, FilterType, SortType, UpdateTy
 import {render, RenderPosition, remove} from '../utils/render';
 import ShowButtonView from '../view/show-button-view';
 import FilmsListView from '../view/films-list-view';
-import {FilmPresenter, State as FilmPresenterViewState} from './film-presenter';
+import FilmPresenter, {State as FilmPresenterViewState} from './film-presenter';
 import SortView from '../view/sort-view';
 import {sortCommentCountDown, sortRatingDown, sortReleaseDateDown} from '../utils/film';
 import {filter} from '../utils/filter';

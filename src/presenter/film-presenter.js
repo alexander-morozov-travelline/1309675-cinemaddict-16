@@ -10,7 +10,7 @@ export const State = {
   ABORTING: 'ABORTING',
 };
 
-export class FilmPresenter {
+export default class FilmPresenter {
   #container = null;
   #changeData = null;
   #changeComment = null;
