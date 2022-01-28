@@ -144,7 +144,7 @@ export default class FilmListPresenter {
   #handleCommentChange = async (actionType, updateType, update) => {
     switch (actionType) {
       case CommentAction.DELETE:
-        this.#filmPresenterWithPopup.setViewState(FilmPresenterViewState.DELETING, update.id);
+        this.#filmPresenterWithPopup.setViewState(FilmPresenterViewState.DELETING, update.comment.id);
         try {
           await this.#commentsModel.deleteComment(updateType, update);
         } catch (err) {
